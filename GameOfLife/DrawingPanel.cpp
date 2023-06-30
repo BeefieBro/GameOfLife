@@ -19,8 +19,13 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
 	context->SetPen(*wxBLACK);
 	context->SetBrush(*wxRED);
 
-	context->DrawRectangle(10, 10, 20, 30);
+
+
 
 	delete context;
+}
+DrawingPanel::~DrawingPanel()
+{
+
 }
 
