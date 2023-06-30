@@ -1,6 +1,6 @@
 #include "DrawingPanel.h"
-#include "ex/graphics.h"
-#include "ex/dcbuffer.h"
+#include "wx/graphics.h"
+#include "wx/dcbuffer.h"
 
 
 DrawingPanel::DrawingPanel(wxFrame* parent) : wxPanel(parent, wxID_ANY, wxPoint(110, 110), wxSize(400, 400))
