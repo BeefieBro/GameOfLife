@@ -3,7 +3,7 @@
 #include "wx/dcbuffer.h"
 
 
-DrawingPanel::DrawingPanel(wxFrame* parent) : wxPanel(parent, wxID_ANY, wxPoint(110, 110), wxSize(400, 400))
+DrawingPanel::DrawingPanel(wxFrame* parent) : wxPanel(parent, wxID_ANY, wxPoint(110, 110), wxSize(100, 100))
 {
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 	Bind(wxEVT_PAINT, &DrawingPanel::OnPaint, this);
