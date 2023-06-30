@@ -23,3 +23,4 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
 
 	delete context;
 }
+

@@ -12,3 +12,4 @@ public:
 	~App();
 	virtual bool OnInit();
 };
+
