@@ -3,40 +3,58 @@
 #include "wx/dcbuffer.h"
 
 
-DrawingPanel::DrawingPanel(wxFrame* parent) : wxPanel(parent, wxID_ANY, wxPoint(110, 110), wxSize(100, 100))
+DrawingPanel::DrawingPanel(wxFrame* parent) : wxPanel(parent, wxID_ANY)
 {
-	SetBackgroundStyle(wxBG_STYLE_PAINT);
-	Bind(wxEVT_PAINT, &DrawingPanel::OnPaint, this);
+    SetBackgroundStyle(wxBG_STYLE_PAINT);
+    Bind(wxEVT_PAINT, &DrawingPanel::OnPaint, this);
 
-	mGridSize = 15;
-	mCellSize = 10;
+    mGridSize = 15;
 }
+
 void DrawingPanel::OnPaint(wxPaintEvent& event)
 {
-	wxAutoBufferedPaintDC dc(this);
-	dc.Clear();
+    wxPaintDC dc(this);
+    wxGraphicsContext* context = wxGraphicsContext::Create(dc);
+    if (!context)
+        return;
 
-	wxGraphicsContext* context = wxGraphicsContext::Create(dc);
-	if (!context) return;
+    context->SetPen(*wxBLACK);
+    context->SetBrush(*wxWHITE);
 
-	context->SetPen(*wxBLACK);
-	context->SetBrush(*wxWHITE);
+    wxSize panelSize = GetSize();
+    int panelWidth = panelSize.GetWidth();
+    int panelHeight = panelSize.GetHeight();
 
-	// mRow is current row. mColumn is current column.
-	// mRow & mColumn are coordinants of each rectangle
-	for (int mRow = 0; mRow < mGridSize; mRow++)
-	{
-		for (int mColumn = 0; mColumn < mGridSize; mColumn++)
-		{
-			int mRectX = mColumn * mCellSize;
-			int mRectY = mRow * mCellSize;
+    mCellWidth = panelWidth / mGridSize;
+    mCellHeight = panelHeight / mGridSize;
 
-			context->DrawRectangle(mRectX, mRectY, mCellSize, mCellSize);
-		}
-	}
+    for (int row = 0; row < mGridSize; row++)
+    {
+        for (int col = 0; col < mGridSize; col++)
+        {
+            int rectX = col * mCellWidth;
+            int rectY = row * mCellHeight;
 
-	delete context;
+            context->DrawRectangle(rectX, rectY, mCellWidth, mCellHeight);
+        }
+    }
+
+    delete context;
 }
+
+void DrawingPanel::UpdateCellSize()
+{
+	wxSize mPanelSize = GetSize();
+
+	int mPanelWidth = mPanelSize.GetWidth();
+	int mPanelHeight = mPanelSize.GetHeight();
+
+	mCellWidth = mPanelWidth / mGridSize;
+	mCellHeight = mPanelHeight / mGridSize;
+}
+
+
+
 DrawingPanel::~DrawingPanel()
 {
 
