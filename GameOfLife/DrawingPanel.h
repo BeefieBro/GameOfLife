@@ -5,7 +5,8 @@ class DrawingPanel : public wxPanel
 {
 private:
 	void OnPaint(wxPaintEvent& event);
-	int mGridSize = 15;
+	int mGridSize;
+	int mCellSize;
 
 public:
 	DrawingPanel(wxFrame* parent);
