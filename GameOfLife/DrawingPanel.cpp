@@ -57,6 +57,12 @@ void DrawingPanel::SetSize(const wxSize& size)
     wxPanel::SetSize(size);
     Refresh();
 }
+void DrawingPanel::SetGridSize(int size)
+{
+    mGridSize = size;
+    UpdateCellSize();
+    Refresh();
+}
 
 
 

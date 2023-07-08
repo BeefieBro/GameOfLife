@@ -7,6 +7,7 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
 	mBoxSizer = new wxBoxSizer(wxVERTICAL);
 	this->SetSizer(mBoxSizer);
 	this->Bind(wxEVT_SIZE, &MainWindow::OnSizeChange, this);
+	InitializeGrid();
 }
 
 void MainWindow::OnSizeChange(wxSizeEvent& event)
@@ -14,6 +15,16 @@ void MainWindow::OnSizeChange(wxSizeEvent& event)
 	wxSize windowSize = event.GetSize();
 	drawingPanel->SetSize(windowSize);
 	event.Skip();
+}
+
+void MainWindow::InitializeGrid()
+{
+	mGameBoard.resize(mGridSize);
+	for (int i = 0; i < mGridSize; i++)
+	{
+		mGameBoard[i].resize(mGridSize);
+	}
+	drawingPanel->SetGridSize(mGridSize);
 }
 
 MainWindow::~MainWindow()

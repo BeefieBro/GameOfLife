@@ -9,9 +9,9 @@ private:
     int mGridSize;
     int mCellWidth;
     int mCellHeight;
-
 public:
     DrawingPanel(wxFrame* parent);
     ~DrawingPanel();
     void SetSize(const wxSize& size);
+    void SetGridSize(int size);
 };
