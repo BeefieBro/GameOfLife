@@ -16,4 +16,7 @@ public:
     ~MainWindow();
     void OnSizeChange(wxSizeEvent& event);
     void InitializeGrid();
+
+    // Define the event table for MainWindow
+    wxDECLARE_EVENT_TABLE();
 };

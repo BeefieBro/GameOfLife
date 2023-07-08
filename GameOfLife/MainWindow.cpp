@@ -1,7 +1,12 @@
 #include "MainWindow.h"
 #include "DrawingPanel.h"
 
-MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(500, 100), wxSize(1000, 900))
+// Define the event table for MainWindow
+wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
+EVT_SIZE(MainWindow::OnSizeChange)
+wxEND_EVENT_TABLE()
+
+MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(500, 100), wxSize(300, 400))
 {
     mBoxSizer = new wxBoxSizer(wxVERTICAL);
     this->SetSizer(mBoxSizer);
@@ -33,5 +38,6 @@ void MainWindow::InitializeGrid()
 
 MainWindow::~MainWindow()
 {
-
 }
+
+

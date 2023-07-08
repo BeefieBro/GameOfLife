@@ -25,4 +25,7 @@ public:
 
     // Add a member function to update the game board reference
     void SetGameBoard(std::vector<std::vector<bool>>& gameBoard);
+
+    // Declare the event table
+    wxDECLARE_EVENT_TABLE();
 };

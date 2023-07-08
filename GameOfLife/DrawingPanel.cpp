@@ -1,13 +1,16 @@
 #include "DrawingPanel.h"
 #include "wx/graphics.h"
-#include "wx/dcbuffer.h" 
+#include "wx/dcbuffer.h"
+
+wxBEGIN_EVENT_TABLE(DrawingPanel, wxPanel)
+EVT_PAINT(DrawingPanel::OnPaint)
+EVT_LEFT_UP(DrawingPanel::OnMouseClick)
+wxEND_EVENT_TABLE()
 
 DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& gameBoard)
     : wxPanel(parent, wxID_ANY), mGameBoard(gameBoard)
 {
     SetBackgroundStyle(wxBG_STYLE_PAINT);
-    Bind(wxEVT_PAINT, &DrawingPanel::OnPaint, this);
-    Bind(wxEVT_LEFT_UP, &DrawingPanel::OnMouseClick, this); // Bind the left-up mouse event
     mGridSize = 15;
     mCellWidth = 0;
     mCellHeight = 0;
@@ -15,12 +18,10 @@ DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& game
 
 void DrawingPanel::OnPaint(wxPaintEvent& event)
 {
-    wxAutoBufferedPaintDC dc(this);
+    wxPaintDC dc(this);
     wxGraphicsContext* context = wxGraphicsContext::Create(dc);
     if (!context)
         return;
-
-    context->SetPen(*wxBLACK);
 
     wxSize panelSize = GetSize();
     int panelWidth = panelSize.GetWidth();
@@ -29,6 +30,21 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
     mCellWidth = panelWidth / mGridSize;
     mCellHeight = panelHeight / mGridSize;
 
+    // Draw grid lines
+    context->SetPen(*wxLIGHT_GREY);
+    for (int row = 0; row <= mGridSize; row++)
+    {
+        int y = row * mCellHeight;
+        context->StrokeLine(0, y, panelWidth, y);
+    }
+    for (int col = 0; col <= mGridSize; col++)
+    {
+        int x = col * mCellWidth;
+        context->StrokeLine(x, 0, x, panelHeight);
+    }
+
+    // Draw cells
+    context->SetPen(*wxBLACK);
     for (int row = 0; row < mGridSize; row++)
     {
         for (int col = 0; col < mGridSize; col++)
@@ -48,14 +64,19 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
     delete context;
 }
 
-void DrawingPanel::UpdateCellSize()
+void DrawingPanel::OnMouseClick(wxMouseEvent& event)
 {
-    wxSize panelSize = GetSize();
-    int panelWidth = panelSize.GetWidth();
-    int panelHeight = panelSize.GetHeight();
+    int x = event.GetX();
+    int y = event.GetY();
 
-    mCellWidth = panelWidth / mGridSize;
-    mCellHeight = panelHeight / mGridSize;
+    int row = y / mCellHeight;
+    int col = x / mCellWidth;
+
+    // Toggle the value of the clicked cell in the game board
+    if (row >= 0 && row < mGridSize && col >= 0 && col < mGridSize)
+        mGameBoard[row][col] = !mGameBoard[row][col];
+
+    Refresh();
 }
 
 void DrawingPanel::SetSize(const wxSize& size)
@@ -72,23 +93,14 @@ void DrawingPanel::SetGridSize(int size)
     Refresh();
 }
 
-void DrawingPanel::OnMouseUp(wxMouseEvent& event)
+void DrawingPanel::UpdateCellSize()
 {
-    // No implementation needed for this method
-}
+    wxSize panelSize = GetSize();
+    int panelWidth = panelSize.GetWidth();
+    int panelHeight = panelSize.GetHeight();
 
-void DrawingPanel::OnMouseClick(wxMouseEvent& event)
-{
-    int x = event.GetX();
-    int y = event.GetY();
-
-    int row = y / mCellHeight;
-    int col = x / mCellWidth;
-
-    if (row >= 0 && row < mGridSize && col >= 0 && col < mGridSize)
-        mGameBoard[row][col] = !mGameBoard[row][col];
-
-    Refresh();
+    mCellWidth = panelWidth / mGridSize;
+    mCellHeight = panelHeight / mGridSize;
 }
 
 void DrawingPanel::SetGameBoard(std::vector<std::vector<bool>>& gameBoard)
@@ -98,5 +110,4 @@ void DrawingPanel::SetGameBoard(std::vector<std::vector<bool>>& gameBoard)
 
 DrawingPanel::~DrawingPanel()
 {
-
 }
