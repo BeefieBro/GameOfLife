@@ -12,6 +12,7 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     this->SetSizer(mBoxSizer);
     this->Bind(wxEVT_SIZE, &MainWindow::OnSizeChange, this);
     InitializeGrid();
+
 }
 
 void MainWindow::OnSizeChange(wxSizeEvent& event)
