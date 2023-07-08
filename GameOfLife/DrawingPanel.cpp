@@ -7,7 +7,7 @@ DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& game
 {
     SetBackgroundStyle(wxBG_STYLE_PAINT);
     Bind(wxEVT_PAINT, &DrawingPanel::OnPaint, this);
-    Bind(wxEVT_LEFT_UP, &DrawingPanel::OnMouseUp, this);
+    Bind(wxEVT_LEFT_UP, &DrawingPanel::OnMouseClick, this); // Bind the left-up mouse event
     mGridSize = 15;
     mCellWidth = 0;
     mCellHeight = 0;
@@ -21,7 +21,6 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
         return;
 
     context->SetPen(*wxBLACK);
-    context->SetBrush(*wxWHITE);
 
     wxSize panelSize = GetSize();
     int panelWidth = panelSize.GetWidth();
@@ -38,7 +37,7 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
             int rectY = row * mCellHeight;
 
             if (mGameBoard[row][col])
-                context->SetBrush(*wxBLACK);
+                context->SetBrush(*wxLIGHT_GREY);
             else
                 context->SetBrush(*wxWHITE);
 
@@ -59,7 +58,26 @@ void DrawingPanel::UpdateCellSize()
     mCellHeight = panelHeight / mGridSize;
 }
 
+void DrawingPanel::SetSize(const wxSize& size)
+{
+    wxPanel::SetSize(size);
+    UpdateCellSize();
+    Refresh();
+}
+
+void DrawingPanel::SetGridSize(int size)
+{
+    mGridSize = size;
+    UpdateCellSize();
+    Refresh();
+}
+
 void DrawingPanel::OnMouseUp(wxMouseEvent& event)
+{
+    // No implementation needed for this method
+}
+
+void DrawingPanel::OnMouseClick(wxMouseEvent& event)
 {
     int x = event.GetX();
     int y = event.GetY();
@@ -73,18 +91,9 @@ void DrawingPanel::OnMouseUp(wxMouseEvent& event)
     Refresh();
 }
 
-void DrawingPanel::SetSize(const wxSize& size)
+void DrawingPanel::SetGameBoard(std::vector<std::vector<bool>>& gameBoard)
 {
-    wxPanel::SetSize(size);
-    UpdateCellSize();
-    Refresh();
-}
-
-void DrawingPanel::SetGridSize(int size)
-{
-    mGridSize = size;
-    UpdateCellSize();
-    Refresh();
+    mGameBoard = gameBoard;
 }
 
 DrawingPanel::~DrawingPanel()
