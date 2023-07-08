@@ -1,6 +1,6 @@
 #include "DrawingPanel.h"
 #include "wx/graphics.h"
-#include "wx/dcbuffer.h"
+#include "wx/dcbuffer.h" 
 
 
 DrawingPanel::DrawingPanel(wxFrame* parent) : wxPanel(parent, wxID_ANY)
@@ -34,7 +34,7 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
         {
             int rectX = col * mCellWidth;
             int rectY = row * mCellHeight;
-
+            
             context->DrawRectangle(rectX, rectY, mCellWidth, mCellHeight);
         }
     }
@@ -51,6 +51,11 @@ void DrawingPanel::UpdateCellSize()
 
 	mCellWidth = mPanelWidth / mGridSize;
 	mCellHeight = mPanelHeight / mGridSize;
+}
+void DrawingPanel::SetSize(const wxSize& size)
+{
+    wxPanel::SetSize(size);
+    Refresh();
 }
 
 
