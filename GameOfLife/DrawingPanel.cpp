@@ -2,18 +2,20 @@
 #include "wx/graphics.h"
 #include "wx/dcbuffer.h" 
 
-
-DrawingPanel::DrawingPanel(wxFrame* parent) : wxPanel(parent, wxID_ANY)
+DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& gameBoard)
+    : wxPanel(parent, wxID_ANY), mGameBoard(gameBoard)
 {
     SetBackgroundStyle(wxBG_STYLE_PAINT);
     Bind(wxEVT_PAINT, &DrawingPanel::OnPaint, this);
-
+    Bind(wxEVT_LEFT_UP, &DrawingPanel::OnMouseUp, this);
     mGridSize = 15;
+    mCellWidth = 0;
+    mCellHeight = 0;
 }
 
 void DrawingPanel::OnPaint(wxPaintEvent& event)
 {
-    wxPaintDC dc(this);
+    wxAutoBufferedPaintDC dc(this);
     wxGraphicsContext* context = wxGraphicsContext::Create(dc);
     if (!context)
         return;
@@ -34,7 +36,12 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
         {
             int rectX = col * mCellWidth;
             int rectY = row * mCellHeight;
-            
+
+            if (mGameBoard[row][col])
+                context->SetBrush(*wxBLACK);
+            else
+                context->SetBrush(*wxWHITE);
+
             context->DrawRectangle(rectX, rectY, mCellWidth, mCellHeight);
         }
     }
@@ -44,19 +51,35 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
 
 void DrawingPanel::UpdateCellSize()
 {
-	wxSize mPanelSize = GetSize();
+    wxSize panelSize = GetSize();
+    int panelWidth = panelSize.GetWidth();
+    int panelHeight = panelSize.GetHeight();
 
-	int mPanelWidth = mPanelSize.GetWidth();
-	int mPanelHeight = mPanelSize.GetHeight();
-
-	mCellWidth = mPanelWidth / mGridSize;
-	mCellHeight = mPanelHeight / mGridSize;
+    mCellWidth = panelWidth / mGridSize;
+    mCellHeight = panelHeight / mGridSize;
 }
+
+void DrawingPanel::OnMouseUp(wxMouseEvent& event)
+{
+    int x = event.GetX();
+    int y = event.GetY();
+
+    int row = y / mCellHeight;
+    int col = x / mCellWidth;
+
+    if (row >= 0 && row < mGridSize && col >= 0 && col < mGridSize)
+        mGameBoard[row][col] = !mGameBoard[row][col];
+
+    Refresh();
+}
+
 void DrawingPanel::SetSize(const wxSize& size)
 {
     wxPanel::SetSize(size);
+    UpdateCellSize();
     Refresh();
 }
+
 void DrawingPanel::SetGridSize(int size)
 {
     mGridSize = size;
@@ -64,10 +87,7 @@ void DrawingPanel::SetGridSize(int size)
     Refresh();
 }
 
-
-
 DrawingPanel::~DrawingPanel()
 {
 
 }
-
