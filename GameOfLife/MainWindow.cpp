@@ -101,3 +101,28 @@ void MainWindow::OnClear(wxCommandEvent& event)
 {
     // Implement clear button logic here
 }
+
+int MainWindow::CountLivingNeighbors(int row, int col)
+{
+    int livingNeighbors = 0;
+    // Iterate over the neighboring cells
+    for (int i = row - 1; i <= row + 1; i++)
+    {
+        for (int j = col - 1; j <= col + 1; j++)
+        {
+            // Check if the neighboring cell is within the game board boundaries
+            if (i >= 0 && i < mGridSize && j >= 0 && j < mGridSize)
+            {
+                // Skip the cell itself
+                if (i == row && j == col)
+                    continue;
+
+                // Check if the neighboring cell is alive
+                if (mGameBoard[i][j])
+                    livingNeighbors++;
+            }
+        }
+    }
+
+    return livingNeighbors;
+}

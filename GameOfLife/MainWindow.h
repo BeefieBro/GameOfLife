@@ -27,6 +27,7 @@ public:
     void OnPlay(wxCommandEvent& event);
     void OnPause(wxCommandEvent& event);
     void OnClear(wxCommandEvent& event);
+    int CountLivingNeighbors(int row, int col);
 
     wxDECLARE_EVENT_TABLE();
 };
