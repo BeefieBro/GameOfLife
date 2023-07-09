@@ -7,11 +7,9 @@ EVT_PAINT(DrawingPanel::OnPaint)
 EVT_LEFT_UP(DrawingPanel::OnMouseClick)
 wxEND_EVENT_TABLE()
 
-
 DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& gameBoard)
     : wxPanel(parent, wxID_ANY), mGameBoard(gameBoard)
 {
-    SetDoubleBuffered(true);
     SetBackgroundStyle(wxBG_STYLE_PAINT);
     mGridSize = 15;
     mCellWidth = 0;
@@ -53,16 +51,13 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
         {
             int rectX = col * mCellWidth;
             int rectY = row * mCellHeight;
-
             if (mGameBoard[row][col])
                 context->SetBrush(*wxLIGHT_GREY);
             else
                 context->SetBrush(*wxWHITE);
-
             context->DrawRectangle(rectX, rectY, mCellWidth, mCellHeight);
         }
     }
-
     delete context;
 }
 
@@ -87,7 +82,6 @@ void DrawingPanel::SetSize(const wxSize& size)
     UpdateCellSize();
     Refresh();
 }
-
 void DrawingPanel::SetGridSize(int size)
 {
     mGridSize = size;

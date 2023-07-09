@@ -1,8 +1,6 @@
 #pragma once
-
 #include "wx/wx.h"
 #include <vector>
-
 class DrawingPanel : public wxPanel
 {
 private:
@@ -10,7 +8,6 @@ private:
     int mGridSize;
     int mCellWidth;
     int mCellHeight;
-
 public:
     DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& gameBoard);
     ~DrawingPanel();
@@ -19,7 +16,6 @@ public:
     void SetSize(const wxSize& size);
     void SetGridSize(int size);
     void OnMouseUp(wxMouseEvent& event);
-
     // Add the event handler method for mouse interaction
     void OnMouseClick(wxMouseEvent& event);
 

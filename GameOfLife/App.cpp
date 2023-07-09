@@ -1,9 +1,5 @@
 #include "App.h"
 #include "MainWindow.h"
-#include "play.xpm"
-#include "pause.xpm"
-#include "next.xpm"
-#include "trash.xpm"
 
 wxIMPLEMENT_APP(App);
 
