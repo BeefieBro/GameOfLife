@@ -1,9 +1,16 @@
 #include "MainWindow.h"
 #include "DrawingPanel.h"
+#include "play.xpm"
+#include "pause.xpm"
+#include "next.xpm"
+#include "trash.xpm"
 
 wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 EVT_SIZE(MainWindow::OnSizeChange)
 EVT_MENU(wxID_ANY, MainWindow::OnNextGeneration)
+EVT_MENU(wxID_ANY, MainWindow::OnPlay)
+EVT_MENU(wxID_ANY, MainWindow::OnPause)
+EVT_MENU(wxID_ANY, MainWindow::OnClear)
 wxEND_EVENT_TABLE()
 
 MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(500, 100), wxSize(1000, 900))
@@ -16,6 +23,18 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
 
     mStatusBar = CreateStatusBar();
     UpdateStatusBar();
+
+    mToolBar = CreateToolBar();
+    wxBitmap playIcon(play_xpm);
+    wxBitmap pauseIcon(pause_xpm);
+    wxBitmap nextIcon(next_xpm);
+    wxBitmap trashIcon(trash_xpm);
+
+    mToolBar->AddTool(10001, "Play", playIcon);
+    mToolBar->AddTool(10002, "Pause", pauseIcon);
+    mToolBar->AddTool(10003, "Next", nextIcon);
+    mToolBar->AddTool(10004, "Clear", trashIcon);
+    mToolBar->Realize();
 
     Bind(wxEVT_SIZE, &MainWindow::OnSizeChange, this);
 
@@ -30,8 +49,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::OnSizeChange(wxSizeEvent& event)
 {
-    wxSize windowSize = event.GetSize();
-    drawingPanel->SetSize(windowSize);
+    if (drawingPanel)
+    {
+        wxSize windowSize = event.GetSize();
+        drawingPanel->SetSize(windowSize);
+    }
     event.Skip();
 }
 
@@ -63,4 +85,19 @@ void MainWindow::OnNextGeneration(wxCommandEvent& event)
     mGenerationCount++;
 
     UpdateStatusBar();
+}
+
+void MainWindow::OnPlay(wxCommandEvent& event)
+{
+    // Implement play button logic here
+}
+
+void MainWindow::OnPause(wxCommandEvent& event)
+{
+    // Implement pause button logic here
+}
+
+void MainWindow::OnClear(wxCommandEvent& event)
+{
+    // Implement clear button logic here
 }

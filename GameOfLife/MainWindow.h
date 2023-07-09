@@ -13,6 +13,7 @@ private:
     int mGenerationCount;
     int mLivingCellCount;
     wxStatusBar* mStatusBar;
+    wxToolBar* mToolBar;
 
 public:
     MainWindow();
@@ -23,6 +24,9 @@ public:
     void UpdateStatusBar();
 
     void OnNextGeneration(wxCommandEvent& event);
+    void OnPlay(wxCommandEvent& event);
+    void OnPause(wxCommandEvent& event);
+    void OnClear(wxCommandEvent& event);
 
     wxDECLARE_EVENT_TABLE();
 };

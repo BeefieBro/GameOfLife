@@ -5,11 +5,10 @@
 
 class App : public wxApp
 {
-private:
-
 public:
-	App();
-	~App();
-	virtual bool OnInit();
+    App();
+    ~App();
+    virtual bool OnInit();
 };
 
+wxDECLARE_APP(App);
