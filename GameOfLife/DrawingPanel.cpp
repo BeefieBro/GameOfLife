@@ -7,6 +7,7 @@ EVT_PAINT(DrawingPanel::OnPaint)
 EVT_LEFT_UP(DrawingPanel::OnMouseClick)
 wxEND_EVENT_TABLE()
 
+
 DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& gameBoard)
     : wxPanel(parent, wxID_ANY), mGameBoard(gameBoard)
 {
