@@ -10,6 +10,7 @@ wxEND_EVENT_TABLE()
 DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& gameBoard)
     : wxPanel(parent, wxID_ANY), mGameBoard(gameBoard)
 {
+    SetDoubleBuffered(true);
     SetBackgroundStyle(wxBG_STYLE_PAINT);
     mGridSize = 15;
     mCellWidth = 0;
