@@ -28,6 +28,7 @@ public:
     void OnPause(wxCommandEvent& event);
     void OnClear(wxCommandEvent& event);
     int CountLivingNeighbors(int row, int col);
+    void CalculateNextGeneration();
 
     wxDECLARE_EVENT_TABLE();
 };
