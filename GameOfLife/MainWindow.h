@@ -12,6 +12,7 @@ private:
     int mGenerationCount = 0; // Number of generations
     int mLivingCellCount = 0; // Number of living cells
     wxStatusBar* mStatusBar; // Status bar
+    wxToolBar* mToolBar;
 
 public:
     MainWindow();
@@ -21,6 +22,7 @@ public:
     void InitializeGrid();
     void UpdateStatusBar(); // Update the status bar with generation and living cell counts
     int CalculateLivingNeighbors(int row, int col);
+    void OnToolBarClicked(wxCommandEvent& event);
 
     // Define the event table for MainWindow
     wxDECLARE_EVENT_TABLE();

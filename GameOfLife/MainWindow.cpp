@@ -1,10 +1,27 @@
 #include "MainWindow.h"
 #include "DrawingPanel.h"
+#include <wx/toolbar.h>
+#include "play.xpm"
+#include "next.xpm"
+#include "pause.xpm"
+#include "trash.xpm"
+#include <wx/defs.h>
+
+enum
+{
+    ID_PLAY = wxID_HIGHEST + 1,
+    ID_PAUSE,
+    ID_NEXT,
+    ID_TRASH
+};
+
 
 // Define the event table for MainWindow
 wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 EVT_SIZE(MainWindow::OnSizeChange)
+EVT_TOOL(wxID_ANY, MainWindow::OnToolBarClicked)
 wxEND_EVENT_TABLE()
+
 
 MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(500, 100), wxSize(300, 400))
 {
@@ -14,17 +31,52 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     // Create the status bar
     mStatusBar = this->CreateStatusBar();
 
+    // Create the toolbar
+    mToolBar = this->CreateToolBar();
+
+    // Add the play icon to the toolbar
+    wxBitmap playBitmap(play_xpm);
+    mToolBar->AddTool(ID_PLAY, "Play", playBitmap, wxNullBitmap, wxITEM_NORMAL, "Play");
+
+    // Add the pause icon to the toolbar
+    wxBitmap pauseBitmap(pause_xpm);
+    mToolBar->AddTool(ID_PAUSE, "Pause", pauseBitmap, wxNullBitmap, wxITEM_NORMAL, "Pause");
+
+    // Add the next icon to the toolbar
+    wxBitmap nextBitmap(next_xpm);
+    mToolBar->AddTool(ID_NEXT, "Next", nextBitmap, wxNullBitmap, wxITEM_NORMAL, "Next");
+
+    // Add the trash icon to the toolbar
+    wxBitmap trashBitmap(trash_xpm);
+    mToolBar->AddTool(ID_TRASH, "Clear", trashBitmap, wxNullBitmap, wxITEM_NORMAL, "Clear");
+
+    // Add the event handler for toolbar events
+    mToolBar->Bind(wxEVT_TOOL, &MainWindow::OnToolBarClicked, this);
+
+    // Realize the toolbar
+    mToolBar->Realize();
+
+    // Bind the size event handler
     this->Bind(wxEVT_SIZE, &MainWindow::OnSizeChange, this);
+
+    // Initialize the grid
     InitializeGrid();
 
-    this->Layout(); // Refresh the layout
+    // Refresh the layout
+    this->Layout();
 }
+
 
 
 void MainWindow::OnSizeChange(wxSizeEvent& event)
 {
+    
     wxSize windowSize = event.GetSize();
-    drawingPanel->SetSize(windowSize);
+
+    if(drawingPanel != nullptr)
+    {
+        drawingPanel->SetSize(windowSize);
+    }
     event.Skip();
 }
 void MainWindow::InitializeGrid()
@@ -70,6 +122,29 @@ int MainWindow::CalculateLivingNeighbors(int row, int col)
 
     return livingCount;
 }
+void MainWindow::OnToolBarClicked(wxCommandEvent& event)
+{
+    int toolbarID = event.GetId();
+
+    switch (toolbarID)
+    {
+    case ID_PLAY:
+        // Handle the play button click
+        break;
+    case ID_PAUSE:
+        // Handle the pause button click
+        break;
+    case ID_NEXT:
+        // Handle the next button click
+        break;
+    case ID_TRASH:
+        // Handle the trash button click
+        break;
+    default:
+        break;
+    }
+}
+
 
 
 MainWindow::~MainWindow()
