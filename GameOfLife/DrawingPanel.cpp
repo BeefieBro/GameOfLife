@@ -16,6 +16,7 @@ DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& game
     mCellHeight = 0;
 }
 
+
 void DrawingPanel::OnPaint(wxPaintEvent& event)
 {
     wxPaintDC dc(this);

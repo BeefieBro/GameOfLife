@@ -14,6 +14,7 @@ private:
     wxStatusBar* mStatusBar; // Status bar
     wxToolBar* mToolBar;
 
+
 public:
     MainWindow();
     ~MainWindow();
@@ -24,7 +25,7 @@ public:
     int CalculateLivingNeighbors(int row, int col);
     void OnToolBarClicked(wxCommandEvent& event);
     void CalculateNextGeneration();
-
+    void ClearGameBoard();
 
     // Define the event table for MainWindow
     wxDECLARE_EVENT_TABLE();

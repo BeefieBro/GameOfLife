@@ -11,6 +11,7 @@ private:
     int mCellWidth;
     int mCellHeight;
 
+
 public:
     DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& gameBoard);
     ~DrawingPanel();

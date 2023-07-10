@@ -121,6 +121,7 @@ int MainWindow::CalculateLivingNeighbors(int row, int col)
     }
 
     return livingCount;
+
 }
 void MainWindow::OnToolBarClicked(wxCommandEvent& event)
 {
@@ -139,7 +140,7 @@ void MainWindow::OnToolBarClicked(wxCommandEvent& event)
         CalculateNextGeneration();
         break;
     case ID_TRASH:
-        // Handle the trash button click
+        ClearGameBoard();
         break;
     default:
         break;
@@ -191,6 +192,24 @@ void MainWindow::CalculateNextGeneration()
 
     mGenerationCount++;
     mLivingCellCount = livingCount;
+
+    UpdateStatusBar();
+
+    drawingPanel->Refresh();
+}
+
+void MainWindow::ClearGameBoard()
+{
+    for (int row = 0; row < mGridSize; row++)
+    {
+        for (int col = 0; col < mGridSize; col++)
+        {
+            mGameBoard[row][col] = false;
+        }
+    }
+
+    mLivingCellCount = 0;
+    mGenerationCount = 0;
 
     UpdateStatusBar();
 

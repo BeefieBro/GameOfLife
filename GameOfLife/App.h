@@ -13,3 +13,4 @@ public:
 };
 
 wxDECLARE_APP(App);
+
