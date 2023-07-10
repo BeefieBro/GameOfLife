@@ -16,9 +16,11 @@ private:
 public:
     MainWindow();
     ~MainWindow();
+
     void OnSizeChange(wxSizeEvent& event);
     void InitializeGrid();
     void UpdateStatusBar(); // Update the status bar with generation and living cell counts
+    int CalculateLivingNeighbors(int row, int col);
 
     // Define the event table for MainWindow
     wxDECLARE_EVENT_TABLE();

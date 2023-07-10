@@ -11,7 +11,8 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     mBoxSizer = new wxBoxSizer(wxVERTICAL);
     this->SetSizer(mBoxSizer);
 
-    this->CreateStatusBar(); // Create the status bar
+    // Create the status bar
+    mStatusBar = this->CreateStatusBar();
 
     this->Bind(wxEVT_SIZE, &MainWindow::OnSizeChange, this);
     InitializeGrid();
@@ -42,6 +43,32 @@ void MainWindow::UpdateStatusBar()
 {
     wxString statusText = wxString::Format("Generation: %d   Living Cells: %d", mGenerationCount, mLivingCellCount);
     mStatusBar->SetStatusText(statusText, 0);
+}
+
+int MainWindow::CalculateLivingNeighbors(int row, int col)
+{
+    int livingCount = 0;
+
+    // Check the eight adjacent cells
+    for (int i = row - 1; i <= row + 1; i++)
+    {
+        for (int j = col - 1; j <= col + 1; j++)
+        {
+            // Skip the current cell
+            if (i == row && j == col)
+                continue;
+
+            // Check if the neighbor cell exists within the bounds of the game board
+            if (i >= 0 && i < mGridSize && j >= 0 && j < mGridSize)
+            {
+                // Increment livingCount if the neighbor cell is alive
+                if (mGameBoard[i][j])
+                    livingCount++;
+            }
+        }
+    }
+
+    return livingCount;
 }
 
 
