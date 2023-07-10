@@ -6,6 +6,7 @@ class App : public wxApp
 {
 private:
 
+
 public:
 	App();
 	~App();

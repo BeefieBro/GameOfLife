@@ -15,6 +15,7 @@ private:
     wxStatusBar* mStatusBar; // Status bar
     wxToolBar* mToolBar;
     wxTimer* mTimer;
+
     int mTimerInterval = 50;
 
 public:

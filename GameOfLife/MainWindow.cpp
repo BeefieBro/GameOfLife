@@ -24,17 +24,18 @@ EVT_TIMER(wxID_ANY, MainWindow::OnTimer)
 wxEND_EVENT_TABLE()
 
 
-MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(500, 100), wxSize(300, 400))
+MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(500, 100), wxSize(1000, 1500))
 {
+
 
 
     mTimer = new wxTimer(this, wxID_ANY);
     //bind timer event
-    this->Bind(wxEVT_TIMER, &MainWindow::OnTimer, this);
+    //this->Bind(wxEVT_TIMER, &MainWindow::OnTimer, this);
     
 
     mBoxSizer = new wxBoxSizer(wxVERTICAL);
-    this->SetSizer(mBoxSizer);
+    //this->SetSizer(mBoxSizer);
 
     // Create the status bar
     mStatusBar = this->CreateStatusBar();
@@ -59,13 +60,13 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     mToolBar->AddTool(ID_TRASH, "Clear", trashBitmap, wxNullBitmap, wxITEM_NORMAL, "Clear");
 
     // Add the event handler for toolbar events
-    mToolBar->Bind(wxEVT_TOOL, &MainWindow::OnToolBarClicked, this);
+    //mToolBar->Bind(wxEVT_TOOL, &MainWindow::OnToolBarClicked, this);
 
     // Realize the toolbar
     mToolBar->Realize();
 
     // Bind the size event handler
-    this->Bind(wxEVT_SIZE, &MainWindow::OnSizeChange, this);
+    //this->Bind(wxEVT_SIZE, &MainWindow::OnSizeChange, this);
 
     // Initialize the grid
     InitializeGrid();
@@ -78,6 +79,7 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
 
 void MainWindow::OnSizeChange(wxSizeEvent& event)
 {
+
     
     wxSize windowSize = event.GetSize();
 
@@ -96,8 +98,8 @@ void MainWindow::InitializeGrid()
     }
     drawingPanel = new DrawingPanel(this, mGameBoard); // Create the drawing panel and pass the game board reference
     drawingPanel->SetGridSize(mGridSize);
-    mBoxSizer->Add(drawingPanel, 1, wxEXPAND | wxALL, 5);
-    SetSizerAndFit(mBoxSizer);
+    //mBoxSizer->Add(drawingPanel, 1, wxEXPAND | wxALL, 5);
+    //SetSizerAndFit(mBoxSizer);
 }
 void MainWindow::UpdateStatusBar()
 {

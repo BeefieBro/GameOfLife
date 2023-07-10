@@ -14,35 +14,36 @@ DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& game
     mGridSize = 15;
     mCellWidth = 0;
     mCellHeight = 0;
+
 }
 
 
 void DrawingPanel::OnPaint(wxPaintEvent& event)
 {
-    wxPaintDC dc(this);
+    wxBufferedPaintDC dc(this);
     wxGraphicsContext* context = wxGraphicsContext::Create(dc);
     if (!context)
         return;
 
-    wxSize panelSize = GetSize();
-    int panelWidth = panelSize.GetWidth();
-    int panelHeight = panelSize.GetHeight();
+    wxSize panelSize = GetClientSize();
+    double panelWidth = panelSize.GetWidth();
+    double panelHeight = panelSize.GetHeight();
 
     mCellWidth = panelWidth / mGridSize;
     mCellHeight = panelHeight / mGridSize;
 
     // Draw grid lines
     context->SetPen(*wxLIGHT_GREY);
-    for (int row = 0; row <= mGridSize; row++)
-    {
-        int y = row * mCellHeight;
-        context->StrokeLine(0, y, panelWidth, y);
-    }
-    for (int col = 0; col <= mGridSize; col++)
-    {
-        int x = col * mCellWidth;
-        context->StrokeLine(x, 0, x, panelHeight);
-    }
+    //for (int row = 0; row <= mGridSize; row++)
+    //{
+    //    int y = row * mCellHeight;
+    //    context->StrokeLine(0, y, panelWidth, y);
+    //}
+    //for (int col = 0; col <= mGridSize; col++)
+    //{
+    //    int x = col * mCellWidth;
+    //    context->StrokeLine(x, 0, x, panelHeight);
+    //}
 
 
     // Draw cells
@@ -94,7 +95,7 @@ void DrawingPanel::SetGridSize(int size)
 
 void DrawingPanel::UpdateCellSize()
 {
-    wxSize panelSize = GetSize();
+    wxSize panelSize = GetClientSize();
     int panelWidth = panelSize.GetWidth();
     int panelHeight = panelSize.GetHeight();
 
