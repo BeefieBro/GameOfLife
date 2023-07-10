@@ -44,6 +44,7 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
         context->StrokeLine(x, 0, x, panelHeight);
     }
 
+
     // Draw cells
     context->SetPen(*wxBLACK);
     for (int row = 0; row < mGridSize; row++)

@@ -4,6 +4,7 @@
 
 class MainWindow : public wxFrame
 {
+
 private:
     DrawingPanel* drawingPanel = nullptr;
     wxBoxSizer* mBoxSizer;

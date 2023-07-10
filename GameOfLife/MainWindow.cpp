@@ -163,6 +163,7 @@ void MainWindow::CalculateNextGeneration()
     int livingCount = 0;
     for (int row = 0; row < mGridSize; row++)
     {
+
         for (int col = 0; col < mGridSize; col++)
         {
             int livingNeighbors = CalculateLivingNeighbors(row, col);

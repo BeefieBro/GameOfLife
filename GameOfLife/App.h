@@ -12,5 +12,6 @@ public:
 	virtual bool OnInit();
 };
 
+
 wxDECLARE_APP(App);
 

@@ -1,4 +1,5 @@
 #include "App.h"
+
 #include "MainWindow.h"
 
 wxIMPLEMENT_APP(App);
