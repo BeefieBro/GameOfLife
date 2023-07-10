@@ -10,9 +10,16 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
 {
     mBoxSizer = new wxBoxSizer(wxVERTICAL);
     this->SetSizer(mBoxSizer);
+
+    this->CreateStatusBar(); // Create the status bar
+
     this->Bind(wxEVT_SIZE, &MainWindow::OnSizeChange, this);
     InitializeGrid();
+
+    this->Layout(); // Refresh the layout
 }
+
+
 void MainWindow::OnSizeChange(wxSizeEvent& event)
 {
     wxSize windowSize = event.GetSize();
@@ -31,7 +38,14 @@ void MainWindow::InitializeGrid()
     mBoxSizer->Add(drawingPanel, 1, wxEXPAND | wxALL, 5);
     SetSizerAndFit(mBoxSizer);
 }
+void MainWindow::UpdateStatusBar()
+{
+    wxString statusText = wxString::Format("Generation: %d   Living Cells: %d", mGenerationCount, mLivingCellCount);
+    mStatusBar->SetStatusText(statusText, 0);
+}
+
 
 MainWindow::~MainWindow()
 {
+    delete mStatusBar;
 }
