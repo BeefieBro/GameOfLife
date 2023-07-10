@@ -20,11 +20,19 @@ enum
 wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 EVT_SIZE(MainWindow::OnSizeChange)
 EVT_TOOL(wxID_ANY, MainWindow::OnToolBarClicked)
+EVT_TIMER(wxID_ANY, MainWindow::OnTimer) 
 wxEND_EVENT_TABLE()
 
 
 MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(500, 100), wxSize(300, 400))
 {
+
+
+    mTimer = new wxTimer(this, wxID_ANY);
+    //bind timer event
+    this->Bind(wxEVT_TIMER, &MainWindow::OnTimer, this);
+    
+
     mBoxSizer = new wxBoxSizer(wxVERTICAL);
     this->SetSizer(mBoxSizer);
 
@@ -130,16 +138,17 @@ void MainWindow::OnToolBarClicked(wxCommandEvent& event)
     switch (toolbarID)
     {
     case ID_PLAY:
-        // Handle the play button click
+        mTimer->Start(mTimerInterval);
         break;
     case ID_PAUSE:
-        // Handle the pause button click
+        mTimer->Stop();
         break;
     case ID_NEXT:
         // handle the next button click
         CalculateNextGeneration();
         break;
     case ID_TRASH:
+        // gets rid of all alive cells, turn them all dead
         ClearGameBoard();
         break;
     default:
@@ -212,6 +221,13 @@ void MainWindow::ClearGameBoard()
     mGenerationCount = 0;
 
     UpdateStatusBar();
+
+    drawingPanel->Refresh();
+}
+
+void MainWindow::OnTimer(wxTimerEvent& event)
+{
+    CalculateNextGeneration();
 
     drawingPanel->Refresh();
 }

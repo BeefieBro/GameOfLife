@@ -13,7 +13,8 @@ private:
     int mLivingCellCount = 0; // Number of living cells
     wxStatusBar* mStatusBar; // Status bar
     wxToolBar* mToolBar;
-
+    wxTimer* mTimer;
+    int mTimerInterval = 50;
 
 public:
     MainWindow();
@@ -26,6 +27,8 @@ public:
     void OnToolBarClicked(wxCommandEvent& event);
     void CalculateNextGeneration();
     void ClearGameBoard();
+    void OnTimer(wxTimerEvent& event);
+
 
     // Define the event table for MainWindow
     wxDECLARE_EVENT_TABLE();
