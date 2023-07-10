@@ -23,6 +23,8 @@ public:
     void UpdateStatusBar(); // Update the status bar with generation and living cell counts
     int CalculateLivingNeighbors(int row, int col);
     void OnToolBarClicked(wxCommandEvent& event);
+    void CalculateNextGeneration();
+
 
     // Define the event table for MainWindow
     wxDECLARE_EVENT_TABLE();

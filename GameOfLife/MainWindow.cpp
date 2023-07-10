@@ -135,7 +135,8 @@ void MainWindow::OnToolBarClicked(wxCommandEvent& event)
         // Handle the pause button click
         break;
     case ID_NEXT:
-        // Handle the next button click
+        // handle the next button click
+        CalculateNextGeneration();
         break;
     case ID_TRASH:
         // Handle the trash button click
@@ -143,6 +144,57 @@ void MainWindow::OnToolBarClicked(wxCommandEvent& event)
     default:
         break;
     }
+}
+void MainWindow::CalculateNextGeneration()
+{
+    std::vector<std::vector<bool>> sandbox(mGridSize, std::vector<bool>(mGridSize));
+
+    // Iterate through the game board and calculate the next state of each cell
+    int livingCount = 0;
+    for (int row = 0; row < mGridSize; row++)
+    {
+        for (int col = 0; col < mGridSize; col++)
+        {
+            int livingNeighbors = CalculateLivingNeighbors(row, col);
+            bool isAlive = mGameBoard[row][col];
+
+            if (isAlive)
+            {
+                // Living cells with less than 2 or more than 3 living neighbors die
+                if (livingNeighbors < 2 || livingNeighbors > 3)
+                {
+                    sandbox[row][col] = false;
+                }
+                else
+                {
+                    sandbox[row][col] = true;
+                    livingCount++;
+                }
+            }
+            else
+            {
+                // Dead cells with exactly 3 living neighbors come to life
+                if (livingNeighbors == 3)
+                {
+                    sandbox[row][col] = true;
+                    livingCount++;
+                }
+                else
+                {
+                    sandbox[row][col] = false;
+                }
+            }
+        }
+    }
+
+    mGameBoard.swap(sandbox);
+
+    mGenerationCount++;
+    mLivingCellCount = livingCount;
+
+    UpdateStatusBar();
+
+    drawingPanel->Refresh();
 }
 
 
