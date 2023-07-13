@@ -6,6 +6,7 @@
 #include "pause.xpm"
 #include "trash.xpm"
 #include <wx/defs.h>
+#include "Settings.h"
 
 enum
 {
@@ -26,8 +27,8 @@ wxEND_EVENT_TABLE()
 
 MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(500, 100), wxSize(1000, 1500))
 {
-
-
+    Settings mSettings;
+    mGridSize = mSettings.GridSize;
 
     mTimer = new wxTimer(this, wxID_ANY);
     //bind timer event
@@ -77,6 +78,7 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
 
 
 
+
 void MainWindow::OnSizeChange(wxSizeEvent& event)
 {
 
@@ -89,15 +91,21 @@ void MainWindow::OnSizeChange(wxSizeEvent& event)
     }
     event.Skip();
 }
+
+Settings& MainWindow::GetSettings()
+{
+    return mSettings;
+}
+
 void MainWindow::InitializeGrid()
 {
-    mGameBoard.resize(mGridSize);
-    for (int i = 0; i < mGridSize; i++)
+    mGameBoard.resize(mSettings.GridSize);
+    for (int i = 0; i < mSettings.GridSize; i++)
     {
-        mGameBoard[i].resize(mGridSize);
+        mGameBoard[i].resize(mSettings.GridSize);
     }
-    drawingPanel = new DrawingPanel(this, mGameBoard); // Create the drawing panel and pass the game board reference
-    drawingPanel->SetGridSize(mGridSize);
+    drawingPanel = new DrawingPanel(this, mGameBoard, &mSettings); // Create the drawing panel and pass the game board reference
+    drawingPanel->SetGridSize(mSettings.GridSize);
     //mBoxSizer->Add(drawingPanel, 1, wxEXPAND | wxALL, 5);
     //SetSizerAndFit(mBoxSizer);
 }
@@ -121,7 +129,7 @@ int MainWindow::CalculateLivingNeighbors(int row, int col)
                 continue;
 
             // Check if the neighbor cell exists within the bounds of the game board
-            if (i >= 0 && i < mGridSize && j >= 0 && j < mGridSize)
+            if (i >= 0 && i < mSettings.GridSize && j >= 0 && j < mSettings.GridSize)
             {
                 // Increment livingCount if the neighbor cell is alive
                 if (mGameBoard[i][j])
@@ -159,14 +167,14 @@ void MainWindow::OnToolBarClicked(wxCommandEvent& event)
 }
 void MainWindow::CalculateNextGeneration()
 {
-    std::vector<std::vector<bool>> sandbox(mGridSize, std::vector<bool>(mGridSize));
+    std::vector<std::vector<bool>> sandbox(mSettings.GridSize, std::vector<bool>(mSettings.GridSize));
 
     // Iterate through the game board and calculate the next state of each cell
     int livingCount = 0;
-    for (int row = 0; row < mGridSize; row++)
+    for (int row = 0; row < mSettings.GridSize; row++)
     {
 
-        for (int col = 0; col < mGridSize; col++)
+        for (int col = 0; col < mSettings.GridSize; col++)
         {
             int livingNeighbors = CalculateLivingNeighbors(row, col);
             bool isAlive = mGameBoard[row][col];
@@ -212,9 +220,9 @@ void MainWindow::CalculateNextGeneration()
 
 void MainWindow::ClearGameBoard()
 {
-    for (int row = 0; row < mGridSize; row++)
+    for (int row = 0; row < mSettings.GridSize; row++)
     {
-        for (int col = 0; col < mGridSize; col++)
+        for (int col = 0; col < mSettings.GridSize; col++)
         {
             mGameBoard[row][col] = false;
         }
@@ -234,6 +242,17 @@ void MainWindow::OnTimer(wxTimerEvent& event)
 
     drawingPanel->Refresh();
 }
+
+void MainWindow::RefreshLivingCellCount()
+{
+    mLivingCellCount = 0;
+    // Finish the fix for the living cell count bug on status bar
+    MainWindow::UpdateStatusBar();
+}
+
+
+
+
 
 
 

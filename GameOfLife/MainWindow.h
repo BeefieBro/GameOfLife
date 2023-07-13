@@ -1,6 +1,7 @@
 #pragma once
 #include "wx/wx.h"
 #include "DrawingPanel.h"
+#include "Settings.h"
 
 class MainWindow : public wxFrame
 {
@@ -8,8 +9,8 @@ class MainWindow : public wxFrame
 private:
     DrawingPanel* drawingPanel = nullptr;
     wxBoxSizer* mBoxSizer;
+    int mGridSize;
     std::vector<std::vector<bool>> mGameBoard;
-    int mGridSize = 15;
     int mGenerationCount = 0; // Number of generations
     int mLivingCellCount = 0; // Number of living cells
     wxStatusBar* mStatusBar; // Status bar
@@ -17,6 +18,9 @@ private:
     wxTimer* mTimer;
 
     int mTimerInterval = 50;
+
+    //create an instance of settings
+    Settings mSettings;
 
 public:
     MainWindow();
@@ -30,7 +34,9 @@ public:
     void CalculateNextGeneration();
     void ClearGameBoard();
     void OnTimer(wxTimerEvent& event);
+    void RefreshLivingCellCount();
 
+    Settings& GetSettings();
 
     // Define the event table for MainWindow
     wxDECLARE_EVENT_TABLE();

@@ -1,20 +1,22 @@
 #include "DrawingPanel.h"
 #include "wx/graphics.h"
 #include "wx/dcbuffer.h"
+#include "MainWindow.h"
 
 wxBEGIN_EVENT_TABLE(DrawingPanel, wxPanel)
 EVT_PAINT(DrawingPanel::OnPaint)
 EVT_LEFT_UP(DrawingPanel::OnMouseClick)
 wxEND_EVENT_TABLE()
 
-DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& gameBoard)
-    : wxPanel(parent, wxID_ANY), mGameBoard(gameBoard)
+DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& gameBoard, Settings* settings)
+    : wxPanel(parent, wxID_ANY), mGameBoard(gameBoard), mSettings(settings)
 {
     SetBackgroundStyle(wxBG_STYLE_PAINT);
-    mGridSize = 15;
+    mGridSize = mSettings->GridSize;
     mCellWidth = 0;
     mCellHeight = 0;
 
+    pMainWindow = (MainWindow*)parent;
 }
 
 
@@ -32,18 +34,8 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
     mCellWidth = panelWidth / mGridSize;
     mCellHeight = panelHeight / mGridSize;
 
-    // Draw grid lines
     context->SetPen(*wxLIGHT_GREY);
-    //for (int row = 0; row <= mGridSize; row++)
-    //{
-    //    int y = row * mCellHeight;
-    //    context->StrokeLine(0, y, panelWidth, y);
-    //}
-    //for (int col = 0; col <= mGridSize; col++)
-    //{
-    //    int x = col * mCellWidth;
-    //    context->StrokeLine(x, 0, x, panelHeight);
-    //}
+    
 
 
     // Draw cells
@@ -76,6 +68,8 @@ void DrawingPanel::OnMouseClick(wxMouseEvent& event)
     if (row >= 0 && row < mGridSize && col >= 0 && col < mGridSize)
         mGameBoard[row][col] = !mGameBoard[row][col];
 
+    pMainWindow->RefreshLivingCellCount();
+
     Refresh();
 }
 
@@ -106,6 +100,17 @@ void DrawingPanel::UpdateCellSize()
 void DrawingPanel::SetGameBoard(std::vector<std::vector<bool>>& gameBoard)
 {
     mGameBoard = gameBoard;
+}
+
+
+void DrawingPanel::SetGridSize(unsigned int gridSize)
+{
+    mSettings->GridSize = gridSize;
+}
+
+unsigned int DrawingPanel::GetGridSize() const
+{
+    return mSettings->GridSize;
 }
 
 DrawingPanel::~DrawingPanel()
