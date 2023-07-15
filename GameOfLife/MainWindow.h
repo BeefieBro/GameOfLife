@@ -21,6 +21,7 @@ private:
 
     //create an instance of settings
     Settings mSettings;
+    wxMenuBar* mMenuBar;
 
 public:
     MainWindow();
@@ -37,6 +38,8 @@ public:
     void RefreshLivingCellCount();
 
     Settings& GetSettings();
+
+    void OnSettings(wxCommandEvent& event);
 
     // Define the event table for MainWindow
     wxDECLARE_EVENT_TABLE();

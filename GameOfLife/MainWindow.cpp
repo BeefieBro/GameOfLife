@@ -7,6 +7,10 @@
 #include "trash.xpm"
 #include <wx/defs.h>
 #include "Settings.h"
+#include "wx/menu.h"
+#include "SettingsDialog.h"
+
+const int ID_SETTINGS = wxID_HIGHEST + 2;
 
 enum
 {
@@ -21,7 +25,8 @@ enum
 wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 EVT_SIZE(MainWindow::OnSizeChange)
 EVT_TOOL(wxID_ANY, MainWindow::OnToolBarClicked)
-EVT_TIMER(wxID_ANY, MainWindow::OnTimer) 
+EVT_TIMER(wxID_ANY, MainWindow::OnTimer)
+EVT_MENU(ID_SETTINGS, MainWindow::OnSettings)
 wxEND_EVENT_TABLE()
 
 
@@ -29,6 +34,14 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
 {
     Settings mSettings;
     mGridSize = mSettings.GridSize;
+
+    mMenuBar = new wxMenuBar();
+    SetMenuBar(mMenuBar);
+    wxMenu* optionsMenu = new wxMenu();
+    optionsMenu->Append(ID_SETTINGS, "Settings");
+    mMenuBar->Append(optionsMenu, "Options");
+    
+
 
     mTimer = new wxTimer(this, wxID_ANY);
     //bind timer event
@@ -250,7 +263,21 @@ void MainWindow::RefreshLivingCellCount()
     MainWindow::UpdateStatusBar();
 }
 
+void MainWindow::OnSettings(wxCommandEvent& event)
+{
+    SettingsDialog dialog(this);
 
+    //open dialog
+    if (dialog.ShowModal() == wxID_OK)
+    {
+        //if OK was clicked, perform actions
+
+        //initialize grid
+        InitializeGrid();
+
+        drawingPanel->Refresh();
+    }
+}
 
 
 
