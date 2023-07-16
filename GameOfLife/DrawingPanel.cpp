@@ -112,6 +112,17 @@ unsigned int DrawingPanel::GetGridSize() const
 {
     return mSettings->GridSize;
 }
+void DrawingPanel::SetGridSizeFromSettings(unsigned int gridSize)
+{
+    SetGridSize(gridSize);
+    Refresh();
+}
+void DrawingPanel::SetGridSize(unsigned int gridSize)
+{
+    mGridSize = gridSize;
+    UpdateCellSize();
+    Refresh();
+}
 
 DrawingPanel::~DrawingPanel()
 {

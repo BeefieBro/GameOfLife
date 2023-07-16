@@ -7,6 +7,10 @@
 class SettingsDialog : public wxDialog
 {
 private:
+
+    unsigned int mUpdatedGridSize;
+
+
     wxBoxSizer* mMainSizer;
     wxSpinCtrl* mGridSizeCtrl;
     wxColourPickerCtrl* mLivingCellColorCtrl;
@@ -22,6 +26,7 @@ public:
     void OnDeadCellColorChange(wxColourPickerEvent& event);
     void OnOKButton(wxCommandEvent& event);
     void OnCancelButton(wxCommandEvent& event);
+    unsigned int GetUpdatedGridSize() const;
 
     wxDECLARE_EVENT_TABLE();
 };

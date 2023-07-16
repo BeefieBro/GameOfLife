@@ -266,28 +266,18 @@ void MainWindow::RefreshLivingCellCount()
 {
     mLivingCellCount = 0;
     // Finish the fix for the living cell count bug on status bar
-    MainWindow::UpdateStatusBar();
+    MainWindow::UpdateStatusBar(); 
 }
 
 void MainWindow::OnSettings(wxCommandEvent& event)
 {
-    SettingsDialog dialog(this, mSettings); // Pass the mSettings object to the dialog
-
-    // Open dialog
-    if (dialog.ShowModal() == wxID_OK)
+    SettingsDialog settingsDialog(this, mSettings);
+    if (settingsDialog.ShowModal() == wxID_OK)
     {
-        // If OK was clicked, perform actions
-
-        // Initialize grid
-        InitializeGrid();
-
-        drawingPanel->Refresh();
+        unsigned int updatedGridSize = settingsDialog.GetUpdatedGridSize();
+        drawingPanel->SetGridSize(updatedGridSize);
     }
 }
-
-
-
-
 
 MainWindow::~MainWindow()
 {

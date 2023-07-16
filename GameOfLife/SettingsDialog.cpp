@@ -11,6 +11,10 @@ wxEND_EVENT_TABLE()
 SettingsDialog::SettingsDialog(wxWindow* parent, Settings& settings)
     : wxDialog(parent, wxID_ANY, "Settings"), settings(settings)
 {
+    mUpdatedGridSize = settings.GridSize;
+
+
+
     mMainSizer = new wxBoxSizer(wxVERTICAL);
 
     wxBoxSizer* gridSizeSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -55,10 +59,9 @@ SettingsDialog::SettingsDialog(wxWindow* parent, Settings& settings)
     SetSizer(mMainSizer);
 
     // Bind event handlers to the controls
-    mGridSizeCtrl->Bind(wxEVT_SPINCTRL, [&](wxSpinEvent& event) {
-        OnGridSizeChange(event);
-        });
+    mGridSizeCtrl->Bind(wxEVT_SPINCTRL, &SettingsDialog::OnGridSizeChange, this, mGridSizeCtrl->GetId());
 
+ 
     mLivingCellColorCtrl->Bind(wxEVT_COLOURPICKER_CHANGED, [&](wxColourPickerEvent& event) {
         OnLivingCellColorChange(event);
         });
@@ -75,7 +78,7 @@ SettingsDialog::SettingsDialog(wxWindow* parent, Settings& settings)
 
 void SettingsDialog::OnGridSizeChange(wxSpinEvent& event)
 {
-    settings.GridSize = event.GetPosition();
+    mUpdatedGridSize = mGridSizeCtrl->GetValue();
 }
 
 void SettingsDialog::OnLivingCellColorChange(wxColourPickerEvent& event)
@@ -90,13 +93,17 @@ void SettingsDialog::OnDeadCellColorChange(wxColourPickerEvent& event)
 
 void SettingsDialog::OnOKButton(wxCommandEvent& event)
 {
-    // Save the settings and close the dialog
-    settings.SaveData();
-    Close();
+    settings.GridSize = mGridSizeCtrl->GetValue();  // Save the updated GridSize value
+    settings.SaveData();  // Save the settings to a file
+    EndModal(wxID_OK);  // Close the dialog with OK status
 }
 
 void SettingsDialog::OnCancelButton(wxCommandEvent& event)
 {
     // Close the dialog without saving the settings
-    Close();
+    EndModal(wxID_CANCEL);
+}
+unsigned int SettingsDialog::GetUpdatedGridSize() const
+{
+    return mUpdatedGridSize;
 }
