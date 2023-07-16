@@ -10,6 +10,7 @@ struct Settings
     unsigned int Green = 128;
     unsigned int Blue = 128;
     unsigned int Alpha = 255;
+
     unsigned int AliveRed = 128;
     unsigned int AliveGreen = 128;
     unsigned int AliveBlue = 128;

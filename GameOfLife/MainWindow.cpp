@@ -37,8 +37,14 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
 
     mMenuBar = new wxMenuBar();
     SetMenuBar(mMenuBar);
+
     wxMenu* optionsMenu = new wxMenu();
     optionsMenu->Append(ID_SETTINGS, "Settings");
+
+    //bind event handler
+    optionsMenu->Bind(wxEVT_MENU, &MainWindow::OnSettings, this, ID_SETTINGS);
+
+
     mMenuBar->Append(optionsMenu, "Options");
     
 
@@ -265,14 +271,14 @@ void MainWindow::RefreshLivingCellCount()
 
 void MainWindow::OnSettings(wxCommandEvent& event)
 {
-    SettingsDialog dialog(this);
+    SettingsDialog dialog(this, mSettings); // Pass the mSettings object to the dialog
 
-    //open dialog
+    // Open dialog
     if (dialog.ShowModal() == wxID_OK)
     {
-        //if OK was clicked, perform actions
+        // If OK was clicked, perform actions
 
-        //initialize grid
+        // Initialize grid
         InitializeGrid();
 
         drawingPanel->Refresh();
