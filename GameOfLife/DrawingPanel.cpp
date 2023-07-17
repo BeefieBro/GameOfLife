@@ -8,8 +8,9 @@ EVT_PAINT(DrawingPanel::OnPaint)
 EVT_LEFT_UP(DrawingPanel::OnMouseClick)
 wxEND_EVENT_TABLE()
 
-DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& gameBoard, Settings* settings)
-    : wxPanel(parent, wxID_ANY), mGameBoard(gameBoard), mSettings(settings)
+DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& gameBoard,
+    std::vector<std::vector<int>>& neighborCount, Settings* settings)
+    : wxPanel(parent, wxID_ANY), mGameBoard(gameBoard),rNeighborCount(neighborCount),  mSettings(settings)
 {
     SetBackgroundStyle(wxBG_STYLE_PAINT);
     mCellWidth = 0;
@@ -47,24 +48,27 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
         {
             int rectX = col * mCellWidth;
             int rectY = row * mCellHeight;
+
             if (mGameBoard[row][col])
                 context->SetBrush(mSettings->GetLivingColor());
             else
                 context->SetBrush(mSettings->GetDeadColor());
+
             context->DrawRectangle(rectX, rectY, mCellWidth, mCellHeight);
 
-            /*if (mSettings->ShowNeighborCount && mNeighborCount[row][col] > 0)
+            
+
+            if (mSettings->ShowNeighborCount && rNeighborCount[row][col] > 0)
             {
-                int xPosition = mCellWidth * row;
-                int yPosition = mCellHeight * col;
-                wxString text = "0";
-                context->DrawText(text, xPosition, yPosition);
-                wxString text = std::to_string(mNeighborCount[row][col]);
+               
+                wxString text = std::to_string(rNeighborCount[row][col]);
+                
+                
                 double x, y;
 
                 context->GetTextExtent(text, &x, &y);
-                context->DrawText(text, xPosition + x, yPosition + y);
-            }*/
+                context->DrawText(text, rectX +(mCellWidth/2) - (x / 2), rectY + (mCellHeight/2) - (y/2));
+            }
         }
     }
     delete context;
@@ -83,6 +87,7 @@ void DrawingPanel::OnMouseClick(wxMouseEvent& event)
     if (row >= 0 && row < mGridSize && col >= 0 && col < mGridSize)
         mGameBoard[row][col] = !mGameBoard[row][col];
 
+    pMainWindow->CalculateLivingNeighborCount();
     pMainWindow->RefreshLivingCellCount();
 
     

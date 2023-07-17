@@ -11,6 +11,7 @@ private:
     wxBoxSizer* mBoxSizer;
     int mGridSize;
     std::vector<std::vector<bool>> mGameBoard;
+    std::vector<std::vector<int>> neighborCount;
     int mGenerationCount = 0; // Number of generations
     int mLivingCellCount = 0; // Number of living cells
     wxStatusBar* mStatusBar; // Status bar
@@ -40,6 +41,8 @@ public:
     Settings& GetSettings();
 
     void OnSettings(wxCommandEvent& event);
+
+    void CalculateLivingNeighborCount();
 
     // Define the event table for MainWindow
     wxDECLARE_EVENT_TABLE();

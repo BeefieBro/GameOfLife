@@ -8,6 +8,8 @@ struct Settings
 
     int Interval = 50;
 
+    bool ShowNeighborCount = true;
+
     unsigned int AliveRed = 128;
     unsigned int AliveGreen = 128;
     unsigned int AliveBlue = 128;

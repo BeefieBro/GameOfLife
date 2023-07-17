@@ -12,6 +12,8 @@ private:
     Settings* mSettings;
 
     std::vector<std::vector<bool>>& mGameBoard;
+    std::vector<std::vector<int>>& rNeighborCount;
+
     double mGridSize;
     double mCellWidth;
     double mCellHeight;
@@ -19,7 +21,7 @@ private:
 
 
 public:
-    DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& gameBoard, Settings* settings);
+    DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& gameBoard, std::vector<std::vector<int>>& neighborCount, Settings* settings);
     ~DrawingPanel();
 
     void OnPaint(wxPaintEvent& event);

@@ -123,19 +123,20 @@ void MainWindow::InitializeGrid()
 {
     mGridSize = mSettings.GridSize;
     mGameBoard.resize(mSettings.GridSize);
+    neighborCount.resize(mSettings.GridSize);
     for (int i = 0; i < mSettings.GridSize; i++)
     {
         mGameBoard[i].resize(mSettings.GridSize);
+        neighborCount[i].resize(mSettings.GridSize);
     }
 
     if(drawingPanel == nullptr)
     {
-        drawingPanel = new DrawingPanel(this, mGameBoard, &mSettings); // Create the drawing panel and pass the game board reference
+        drawingPanel = new DrawingPanel(this, mGameBoard, neighborCount, &mSettings); // Create the drawing panel and pass the game board reference
     }
 
     drawingPanel->SetGridSize(mSettings.GridSize);
-    //mBoxSizer->Add(drawingPanel, 1, wxEXPAND | wxALL, 5);
-    //SetSizerAndFit(mBoxSizer);
+    
 }
 void MainWindow::UpdateStatusBar()
 {
@@ -235,6 +236,7 @@ void MainWindow::CalculateNextGeneration()
             }
         }
     }
+    
 
     mGameBoard.swap(sandbox);
 
@@ -242,7 +244,7 @@ void MainWindow::CalculateNextGeneration()
     mLivingCellCount = livingCount;
 
     UpdateStatusBar();
-
+    MainWindow::CalculateLivingNeighborCount();
     drawingPanel->Refresh();
 }
 
@@ -288,6 +290,22 @@ void MainWindow::OnSettings(wxCommandEvent& event)
         //Call the grid size setter in your settings object and pass in settingsDialog.GetUpdatedGridSize()
         InitializeGrid();
         Refresh();
+    }
+}
+void MainWindow::CalculateLivingNeighborCount()
+{
+    
+    for (int row = 0; row < mSettings.GridSize; row++)
+    {
+
+        for (int col = 0; col < mSettings.GridSize; col++)
+        {
+            int livingNeighbors = CalculateLivingNeighbors(row, col);
+
+            neighborCount[row][col] = livingNeighbors;
+
+            
+        }
     }
 }
 
