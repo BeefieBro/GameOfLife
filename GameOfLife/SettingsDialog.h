@@ -20,10 +20,7 @@ private:
 public:
     SettingsDialog(wxWindow* parent, Settings& settings);
 
-    // Event handlers
-    void OnGridSizeChange(wxSpinEvent& event);
-    void OnLivingCellColorChange(wxColourPickerEvent& event);
-    void OnDeadCellColorChange(wxColourPickerEvent& event);
+
     void OnOKButton(wxCommandEvent& event);
     void OnCancelButton(wxCommandEvent& event);
     unsigned int GetUpdatedGridSize() const;

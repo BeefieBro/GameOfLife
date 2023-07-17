@@ -30,10 +30,13 @@ EVT_MENU(ID_SETTINGS, MainWindow::OnSettings)
 wxEND_EVENT_TABLE()
 
 
-MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(500, 100), wxSize(1000, 1500))
+MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(500, 100), wxSize(1000, 900))
 {
-    Settings mSettings;
-    mGridSize = mSettings.GridSize;
+
+    
+    
+   // Add Load Settings
+    mSettings.LoadData();
 
     mMenuBar = new wxMenuBar();
     SetMenuBar(mMenuBar);
@@ -118,12 +121,18 @@ Settings& MainWindow::GetSettings()
 
 void MainWindow::InitializeGrid()
 {
+    mGridSize = mSettings.GridSize;
     mGameBoard.resize(mSettings.GridSize);
     for (int i = 0; i < mSettings.GridSize; i++)
     {
         mGameBoard[i].resize(mSettings.GridSize);
     }
-    drawingPanel = new DrawingPanel(this, mGameBoard, &mSettings); // Create the drawing panel and pass the game board reference
+
+    if(drawingPanel == nullptr)
+    {
+        drawingPanel = new DrawingPanel(this, mGameBoard, &mSettings); // Create the drawing panel and pass the game board reference
+    }
+
     drawingPanel->SetGridSize(mSettings.GridSize);
     //mBoxSizer->Add(drawingPanel, 1, wxEXPAND | wxALL, 5);
     //SetSizerAndFit(mBoxSizer);
@@ -267,6 +276,7 @@ void MainWindow::RefreshLivingCellCount()
     mLivingCellCount = 0;
     // Finish the fix for the living cell count bug on status bar
     MainWindow::UpdateStatusBar(); 
+    Refresh();
 }
 
 void MainWindow::OnSettings(wxCommandEvent& event)
@@ -274,8 +284,10 @@ void MainWindow::OnSettings(wxCommandEvent& event)
     SettingsDialog settingsDialog(this, mSettings);
     if (settingsDialog.ShowModal() == wxID_OK)
     {
-        unsigned int updatedGridSize = settingsDialog.GetUpdatedGridSize();
-        drawingPanel->SetGridSize(updatedGridSize);
+
+        //Call the grid size setter in your settings object and pass in settingsDialog.GetUpdatedGridSize()
+        InitializeGrid();
+        Refresh();
     }
 }
 

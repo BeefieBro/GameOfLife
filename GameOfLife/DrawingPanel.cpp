@@ -12,7 +12,6 @@ DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& game
     : wxPanel(parent, wxID_ANY), mGameBoard(gameBoard), mSettings(settings)
 {
     SetBackgroundStyle(wxBG_STYLE_PAINT);
-    mGridSize = mSettings->GridSize;
     mCellWidth = 0;
     mCellHeight = 0;
 
@@ -22,7 +21,9 @@ DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& game
 
 void DrawingPanel::OnPaint(wxPaintEvent& event)
 {
-    wxBufferedPaintDC dc(this);
+    mGridSize = mSettings->GridSize;
+    wxAutoBufferedPaintDC dc(this);
+    dc.Clear();
     wxGraphicsContext* context = wxGraphicsContext::Create(dc);
     if (!context)
         return;
@@ -35,7 +36,7 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
     mCellHeight = panelHeight / mGridSize;
 
     context->SetPen(*wxLIGHT_GREY);
-    
+    context->SetFont(wxFontInfo(16), *wxRED);
 
 
     // Draw cells
@@ -47,10 +48,23 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
             int rectX = col * mCellWidth;
             int rectY = row * mCellHeight;
             if (mGameBoard[row][col])
-                context->SetBrush(*wxLIGHT_GREY);
+                context->SetBrush(mSettings->GetLivingColor());
             else
-                context->SetBrush(*wxWHITE);
+                context->SetBrush(mSettings->GetDeadColor());
             context->DrawRectangle(rectX, rectY, mCellWidth, mCellHeight);
+
+            /*if (mSettings->ShowNeighborCount && mNeighborCount[row][col] > 0)
+            {
+                int xPosition = mCellWidth * row;
+                int yPosition = mCellHeight * col;
+                wxString text = "0";
+                context->DrawText(text, xPosition, yPosition);
+                wxString text = std::to_string(mNeighborCount[row][col]);
+                double x, y;
+
+                context->GetTextExtent(text, &x, &y);
+                context->DrawText(text, xPosition + x, yPosition + y);
+            }*/
         }
     }
     delete context;
@@ -58,6 +72,7 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
 
 void DrawingPanel::OnMouseClick(wxMouseEvent& event)
 {
+    mGridSize = mSettings->GridSize;
     int x = event.GetX();
     int y = event.GetY();
 
@@ -70,7 +85,7 @@ void DrawingPanel::OnMouseClick(wxMouseEvent& event)
 
     pMainWindow->RefreshLivingCellCount();
 
-    Refresh();
+    
 }
 
 void DrawingPanel::SetSize(const wxSize& size)
@@ -82,13 +97,14 @@ void DrawingPanel::SetSize(const wxSize& size)
 
 void DrawingPanel::SetGridSize(int size)
 {
-    mGridSize = size;
+    mGridSize = mSettings->GridSize;
     UpdateCellSize();
     Refresh();
 }
 
 void DrawingPanel::UpdateCellSize()
 {
+    mGridSize = mSettings->GridSize;
     wxSize panelSize = GetClientSize();
     int panelWidth = panelSize.GetWidth();
     int panelHeight = panelSize.GetHeight();
@@ -103,26 +119,7 @@ void DrawingPanel::SetGameBoard(std::vector<std::vector<bool>>& gameBoard)
 }
 
 
-void DrawingPanel::SetGridSize(unsigned int gridSize)
-{
-    mSettings->GridSize = gridSize;
-}
 
-unsigned int DrawingPanel::GetGridSize() const
-{
-    return mSettings->GridSize;
-}
-void DrawingPanel::SetGridSizeFromSettings(unsigned int gridSize)
-{
-    SetGridSize(gridSize);
-    Refresh();
-}
-void DrawingPanel::SetGridSize(unsigned int gridSize)
-{
-    mGridSize = gridSize;
-    UpdateCellSize();
-    Refresh();
-}
 
 DrawingPanel::~DrawingPanel()
 {

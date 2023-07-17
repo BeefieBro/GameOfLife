@@ -1,9 +1,9 @@
 #include "SettingsDialog.h"
 
 wxBEGIN_EVENT_TABLE(SettingsDialog, wxDialog)
-EVT_SPINCTRL(wxID_ANY, SettingsDialog::OnGridSizeChange)
+/*
 EVT_COLOURPICKER_CHANGED(wxID_ANY, SettingsDialog::OnLivingCellColorChange)
-EVT_COLOURPICKER_CHANGED(wxID_ANY, SettingsDialog::OnDeadCellColorChange)
+EVT_COLOURPICKER_CHANGED(wxID_ANY, SettingsDialog::OnDeadCellColorChange)*/
 EVT_BUTTON(wxID_OK, SettingsDialog::OnOKButton)
 EVT_BUTTON(wxID_CANCEL, SettingsDialog::OnCancelButton)
 wxEND_EVENT_TABLE()
@@ -58,42 +58,17 @@ SettingsDialog::SettingsDialog(wxWindow* parent, Settings& settings)
 
     SetSizer(mMainSizer);
 
-    // Bind event handlers to the controls
-    mGridSizeCtrl->Bind(wxEVT_SPINCTRL, &SettingsDialog::OnGridSizeChange, this, mGridSizeCtrl->GetId());
-
- 
-    mLivingCellColorCtrl->Bind(wxEVT_COLOURPICKER_CHANGED, [&](wxColourPickerEvent& event) {
-        OnLivingCellColorChange(event);
-        });
-
-    mDeadCellColorCtrl->Bind(wxEVT_COLOURPICKER_CHANGED, [&](wxColourPickerEvent& event) {
-        OnDeadCellColorChange(event);
-        });
-
     // Set initial values from the settings
     mGridSizeCtrl->SetValue(settings.GridSize);
-    mLivingCellColorCtrl->SetColour(settings.SetLivingColor());
-    mDeadCellColorCtrl->SetColour(settings.SetDeadColor());
-}
-
-void SettingsDialog::OnGridSizeChange(wxSpinEvent& event)
-{
-    mUpdatedGridSize = mGridSizeCtrl->GetValue();
-}
-
-void SettingsDialog::OnLivingCellColorChange(wxColourPickerEvent& event)
-{
-    settings.SetColor(event.GetColour());
-}
-
-void SettingsDialog::OnDeadCellColorChange(wxColourPickerEvent& event)
-{
-    // Handle dead cell color change event
+    mLivingCellColorCtrl->SetColour(settings.GetLivingColor());
+    mDeadCellColorCtrl->SetColour(settings.GetDeadColor());
 }
 
 void SettingsDialog::OnOKButton(wxCommandEvent& event)
 {
     settings.GridSize = mGridSizeCtrl->GetValue();  // Save the updated GridSize value
+    settings.SetLivingColor(mLivingCellColorCtrl->GetColour());
+    settings.SetDeadColor(mDeadCellColorCtrl->GetColour());
     settings.SaveData();  // Save the settings to a file
     EndModal(wxID_OK);  // Close the dialog with OK status
 }

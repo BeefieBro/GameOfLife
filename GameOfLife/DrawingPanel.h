@@ -30,10 +30,8 @@ public:
 
     void SetGameBoard(std::vector<std::vector<bool>>& gameBoard);
 
-    void SetGridSize(unsigned int gridSize);
-    unsigned int GetGridSize() const;
-    void SetGridSizeFromSettings(unsigned int gridSize);
-    void SetGridSize(unsigned int gridSize);
+    
+
 
     wxDECLARE_EVENT_TABLE();
 };
