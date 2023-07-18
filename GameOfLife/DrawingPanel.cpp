@@ -58,7 +58,7 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
 
             
 
-            if (mSettings->ShowNeighborCount && rNeighborCount[row][col] > 0)
+            if (mSettings->ShowNeighborCount  && rNeighborCount[row][col] > 0)
             {
                
                 wxString text = std::to_string(rNeighborCount[row][col]);
@@ -87,7 +87,9 @@ void DrawingPanel::OnMouseClick(wxMouseEvent& event)
     if (row >= 0 && row < mGridSize && col >= 0 && col < mGridSize)
         mGameBoard[row][col] = !mGameBoard[row][col];
 
-    pMainWindow->CalculateLivingNeighborCount();
+   
+        pMainWindow->CalculateLivingNeighborCount();
+    
     pMainWindow->RefreshLivingCellCount();
 
     

@@ -1,9 +1,6 @@
 #include "SettingsDialog.h"
 
 wxBEGIN_EVENT_TABLE(SettingsDialog, wxDialog)
-/*
-EVT_COLOURPICKER_CHANGED(wxID_ANY, SettingsDialog::OnLivingCellColorChange)
-EVT_COLOURPICKER_CHANGED(wxID_ANY, SettingsDialog::OnDeadCellColorChange)*/
 EVT_BUTTON(wxID_OK, SettingsDialog::OnOKButton)
 EVT_BUTTON(wxID_CANCEL, SettingsDialog::OnCancelButton)
 wxEND_EVENT_TABLE()
@@ -21,6 +18,7 @@ SettingsDialog::SettingsDialog(wxWindow* parent, Settings& settings)
     wxBoxSizer* livingCellColorSizer = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* deadCellColorSizer = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+    
 
     // Create labels
     wxStaticText* gridSizeLabel = new wxStaticText(this, wxID_ANY, "Grid Size:");
@@ -35,6 +33,8 @@ SettingsDialog::SettingsDialog(wxWindow* parent, Settings& settings)
     // Create buttons
     wxButton* okButton = new wxButton(this, wxID_OK, "OK");
     wxButton* cancelButton = new wxButton(this, wxID_CANCEL, "Cancel");
+
+    
 
     // Add labels and controls to the child box sizers
     gridSizeSizer->Add(gridSizeLabel, wxSizerFlags().Align(wxALIGN_CENTER_VERTICAL));

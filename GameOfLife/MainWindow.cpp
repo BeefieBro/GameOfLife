@@ -10,14 +10,15 @@
 #include "wx/menu.h"
 #include "SettingsDialog.h"
 
-const int ID_SETTINGS = wxID_HIGHEST + 2;
 
 enum
 {
-    ID_PLAY = wxID_HIGHEST + 1,
+    ID_PLAY = wxID_HIGHEST + 2,
     ID_PAUSE,
     ID_NEXT,
-    ID_TRASH
+    ID_TRASH,
+    ID_SETTINGS,
+    ID_SHOWNEIGHBORCOUNT
 };
 
 
@@ -27,6 +28,7 @@ EVT_SIZE(MainWindow::OnSizeChange)
 EVT_TOOL(wxID_ANY, MainWindow::OnToolBarClicked)
 EVT_TIMER(wxID_ANY, MainWindow::OnTimer)
 EVT_MENU(ID_SETTINGS, MainWindow::OnSettings)
+EVT_MENU(ID_SHOWNEIGHBORCOUNT, MainWindow::OnShowNeighborCount)
 wxEND_EVENT_TABLE()
 
 
@@ -42,10 +44,13 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     SetMenuBar(mMenuBar);
 
     wxMenu* optionsMenu = new wxMenu();
+    
     optionsMenu->Append(ID_SETTINGS, "Settings");
+    optionsMenu->Append(ID_SHOWNEIGHBORCOUNT, "Show neighbor Count", "", true);
 
     //bind event handler
     optionsMenu->Bind(wxEVT_MENU, &MainWindow::OnSettings, this, ID_SETTINGS);
+    optionsMenu->Bind(wxEVT_MENU, &MainWindow::OnShowNeighborCount, this, ID_SHOWNEIGHBORCOUNT);
 
 
     mMenuBar->Append(optionsMenu, "Options");
@@ -244,7 +249,9 @@ void MainWindow::CalculateNextGeneration()
     mLivingCellCount = livingCount;
 
     UpdateStatusBar();
-    MainWindow::CalculateLivingNeighborCount();
+    
+        MainWindow::CalculateLivingNeighborCount();
+    
     drawingPanel->Refresh();
 }
 
@@ -295,18 +302,24 @@ void MainWindow::OnSettings(wxCommandEvent& event)
 void MainWindow::CalculateLivingNeighborCount()
 {
     
-    for (int row = 0; row < mSettings.GridSize; row++)
-    {
-
-        for (int col = 0; col < mSettings.GridSize; col++)
+        for (int row = 0; row < mSettings.GridSize; row++)
         {
-            int livingNeighbors = CalculateLivingNeighbors(row, col);
 
-            neighborCount[row][col] = livingNeighbors;
+            for (int col = 0; col < mSettings.GridSize; col++)
+            {
+                int livingNeighbors = CalculateLivingNeighbors(row, col);
 
-            
+                neighborCount[row][col] = livingNeighbors;
+
+
+            }
         }
-    }
+    
+}
+
+void MainWindow::OnShowNeighborCount(wxCommandEvent& event)
+{
+    !mSettings.ShowNeighborCount = mSettings.ShowNeighborCount;
 }
 
 MainWindow::~MainWindow()

@@ -2,6 +2,7 @@
 #include "wx/wx.h"
 #include "wx/spinctrl.h"
 #include "wx/clrpicker.h"
+#include <wx/checkbox.h>
 #include "Settings.h"
 
 class SettingsDialog : public wxDialog

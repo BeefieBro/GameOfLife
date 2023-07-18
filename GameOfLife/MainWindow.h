@@ -43,6 +43,7 @@ public:
     void OnSettings(wxCommandEvent& event);
 
     void CalculateLivingNeighborCount();
+    void OnShowNeighborCount(wxCommandEvent& event);
 
     // Define the event table for MainWindow
     wxDECLARE_EVENT_TABLE();
