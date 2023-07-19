@@ -47,7 +47,7 @@ public:
     void RandomizeBoard(wxCommandEvent& event);
     void OnSaveBoard(wxCommandEvent& event);
     void OnOpenBoard(wxCommandEvent& event);
-
+    
 
 
 

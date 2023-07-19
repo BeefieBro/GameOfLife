@@ -2,12 +2,16 @@
 
 enum
 {
-    ID_DEFAULTSETTINGS = wxID_HIGHEST + 1
+    ID_DEFAULTSETTINGS = wxID_HIGHEST + 1,
+    ID_FINITE,
+    ID_TORODIAL
 };
 
 wxBEGIN_EVENT_TABLE(SettingsDialog, wxDialog)
 EVT_BUTTON(wxID_OK, SettingsDialog::OnOKButton)
 EVT_BUTTON(wxID_CANCEL, SettingsDialog::OnCancelButton)
+EVT_BUTTON(ID_FINITE, SettingsDialog::OnFinite)
+EVT_BUTTON(ID_TORODIAL, SettingsDialog::OnTorodial)
 wxEND_EVENT_TABLE()
 
 SettingsDialog::SettingsDialog(wxWindow* parent, Settings& settings)
@@ -94,4 +98,12 @@ void SettingsDialog::OnDefaultSettingsButton(wxCommandEvent& event)
     settings.GridSize = 15;
     EndModal(wxID_CANCEL);
     event.Skip();
+}
+void SettingsDialog::OnFinite(wxCommandEvent& event)
+{
+
+}
+void SettingsDialog::OnTorodial(wxCommandEvent& event)
+{
+
 }

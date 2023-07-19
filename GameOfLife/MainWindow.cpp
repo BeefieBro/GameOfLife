@@ -22,7 +22,9 @@ enum
     ID_TRASH,
     ID_SETTINGS,
     ID_SHOWNEIGHBORCOUNT,
-    ID_RANDOMIZE
+    ID_RANDOMIZE,
+    ID_FINITE,
+    ID_TORODIAL
 };
 
 
@@ -54,10 +56,15 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     wxMenu* optionsMenu = new wxMenu();
     wxMenu* viewMenu = new wxMenu();
 
-    
+    //doing universe stuff
+    wxMenuItem* finite = new wxMenuItem(viewMenu, ID_FINITE, "Finite", "",wxITEM_CHECK);
+    wxMenuItem* torodial = new wxMenuItem(viewMenu, ID_TORODIAL, "Torodial", "", wxITEM_CHECK);
+
+    finite->SetCheckable(true);
+    torodial->SetCheckable(true);
+
     fileMenu->Append(wxID_SAVE);
     fileMenu->Append(wxID_OPEN);
-    
     
     
     optionsMenu->Append(ID_SETTINGS, "Settings");

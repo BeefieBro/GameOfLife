@@ -26,6 +26,8 @@ public:
     void OnCancelButton(wxCommandEvent& event);
     unsigned int GetUpdatedGridSize() const;
     void OnDefaultSettingsButton(wxCommandEvent& event);
+    void OnFinite(wxCommandEvent& event);
+    void OnTorodial(wxCommandEvent& event);
 
     wxDECLARE_EVENT_TABLE();
 };
