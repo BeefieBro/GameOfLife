@@ -9,6 +9,7 @@
 #include "Settings.h"
 #include "wx/menu.h"
 #include "SettingsDialog.h"
+#include<cstdlib>
 
 
 enum
@@ -18,7 +19,8 @@ enum
     ID_NEXT,
     ID_TRASH,
     ID_SETTINGS,
-    ID_SHOWNEIGHBORCOUNT
+    ID_SHOWNEIGHBORCOUNT,
+    ID_RANDOMIZE
 };
 
 
@@ -29,6 +31,7 @@ EVT_TOOL(wxID_ANY, MainWindow::OnToolBarClicked)
 EVT_TIMER(wxID_ANY, MainWindow::OnTimer)
 EVT_MENU(ID_SETTINGS, MainWindow::OnSettings)
 EVT_MENU(ID_SHOWNEIGHBORCOUNT, MainWindow::OnShowNeighborCount)
+EVT_MENU(ID_RANDOMIZE, MainWindow::RandomizeBoard)
 wxEND_EVENT_TABLE()
 
 
@@ -47,10 +50,12 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     
     optionsMenu->Append(ID_SETTINGS, "Settings");
     optionsMenu->Append(ID_SHOWNEIGHBORCOUNT, "Show neighbor Count", "", true);
+    optionsMenu->Append(ID_RANDOMIZE, "Randomize Board", "Fills in the board with around 40% live cells");
 
     //bind event handler
     optionsMenu->Bind(wxEVT_MENU, &MainWindow::OnSettings, this, ID_SETTINGS);
     optionsMenu->Bind(wxEVT_MENU, &MainWindow::OnShowNeighborCount, this, ID_SHOWNEIGHBORCOUNT);
+    optionsMenu->Bind(wxEVT_MENU, &MainWindow::RandomizeBoard, this, ID_RANDOMIZE);
 
 
     mMenuBar->Append(optionsMenu, "Options");
@@ -316,10 +321,28 @@ void MainWindow::CalculateLivingNeighborCount()
         }
     
 }
+void MainWindow::RandomizeBoard(wxCommandEvent& event)
+{
+    srand((unsigned)time(NULL));
+    MainWindow::ClearGameBoard();
+
+    for (int row = 0; row < mSettings.GridSize; row++)
+    {
+        for (int col = 0; col < mSettings.GridSize; col++)
+        {
+            int random = rand() % 100;
+
+            if(random <= 40)
+            {
+                mGameBoard[row][col] = true;
+            }
+        }
+    }
+}
 
 void MainWindow::OnShowNeighborCount(wxCommandEvent& event)
 {
-    !mSettings.ShowNeighborCount = mSettings.ShowNeighborCount;
+    mSettings.ShowNeighborCount = !mSettings.ShowNeighborCount;
 }
 
 MainWindow::~MainWindow()
