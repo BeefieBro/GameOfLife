@@ -25,6 +25,7 @@ public:
     void OnOKButton(wxCommandEvent& event);
     void OnCancelButton(wxCommandEvent& event);
     unsigned int GetUpdatedGridSize() const;
+    void OnDefaultSettingsButton(wxCommandEvent& event);
 
     wxDECLARE_EVENT_TABLE();
 };

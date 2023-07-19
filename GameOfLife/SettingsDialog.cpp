@@ -1,5 +1,10 @@
 #include "SettingsDialog.h"
 
+enum
+{
+    ID_DEFAULTSETTINGS = wxID_HIGHEST + 1
+};
+
 wxBEGIN_EVENT_TABLE(SettingsDialog, wxDialog)
 EVT_BUTTON(wxID_OK, SettingsDialog::OnOKButton)
 EVT_BUTTON(wxID_CANCEL, SettingsDialog::OnCancelButton)
@@ -33,6 +38,7 @@ SettingsDialog::SettingsDialog(wxWindow* parent, Settings& settings)
     // Create buttons
     wxButton* okButton = new wxButton(this, wxID_OK, "OK");
     wxButton* cancelButton = new wxButton(this, wxID_CANCEL, "Cancel");
+    wxButton* defaultSettingsButton = new wxButton(this, ID_DEFAULTSETTINGS, "Default Settings");
 
     
 
@@ -49,6 +55,7 @@ SettingsDialog::SettingsDialog(wxWindow* parent, Settings& settings)
     // Add buttons to the button sizer
     buttonSizer->Add(okButton, wxSizerFlags().Border(wxALL, 5));
     buttonSizer->Add(cancelButton, wxSizerFlags().Border(wxALL, 5));
+    buttonSizer->Add(defaultSettingsButton, wxSizerFlags().Border(wxALL, 5));
 
     // Add the child box sizers to the main sizer
     mMainSizer->Add(gridSizeSizer, wxSizerFlags().Expand().Border(wxALL, 5));
@@ -81,4 +88,10 @@ void SettingsDialog::OnCancelButton(wxCommandEvent& event)
 unsigned int SettingsDialog::GetUpdatedGridSize() const
 {
     return mUpdatedGridSize;
+}
+void SettingsDialog::OnDefaultSettingsButton(wxCommandEvent& event)
+{
+    settings.GridSize = 15;
+    EndModal(wxID_CANCEL);
+    event.Skip();
 }
