@@ -276,16 +276,19 @@ void MainWindow::CalculateNextGeneration()
 
 void MainWindow::ClearGameBoard()
 {
-    for (int row = 0; row < mSettings.GridSize; row++)
+    if(mSettings.GridSize != 0)
     {
-        for (int col = 0; col < mSettings.GridSize; col++)
+        for (int row = 0; row < mSettings.GridSize; row++)
         {
-            mGameBoard[row][col] = false;
+            for (int col = 0; col < mSettings.GridSize; col++)
+            {
+                mGameBoard[row][col] = false;
+            }
         }
-    }
 
-    mLivingCellCount = 0;
-    mGenerationCount = 0;
+        mLivingCellCount = 0;
+        mGenerationCount = 0;
+    }
 
     UpdateStatusBar();
 
@@ -398,6 +401,57 @@ void MainWindow::OnSaveBoard(wxCommandEvent& event)
 }
 void MainWindow::OnOpenBoard(wxCommandEvent& event)
 {
+    wxFileDialog fileDialog(this, "Open game of life file", wxEmptyString, wxEmptyString, "Game of Life Files (*.cells) | *.cells", wxFD_OPEN);
+
+    if (fileDialog.ShowModal() == wxID_CANCEL)
+    {
+        return;
+    }
+    
+
+    
+    mGameBoard.clear();
+    mGameBoard.resize(0);
+    //MainWindow::ClearGameBoard();
+
+    std::string buffer;
+    std::ifstream fileStream;
+    int index = 0;
+    fileStream.open((std::string)fileDialog.GetPath());
+    if (fileStream.is_open())
+    {
+        while (!fileStream.eof())
+        {
+            std::getline(fileStream, buffer);
+            if (buffer.size() == 0) { break; }
+            if (mGameBoard.size() == 0)
+            {
+                mGameBoard.resize(buffer.size());
+                mSettings.GridSize = buffer.size();
+                Refresh();
+
+            }
+            mGameBoard[index].resize(buffer.size());
+            for (int i = 0; i < buffer.size(); i++)
+            {
+                if (buffer[i] == '*')
+                {
+                    mGameBoard[index][i] = true;
+                }
+                else
+                {
+                    mGameBoard[index][i] = false;
+                }
+
+            }
+            index++;
+            
+        }
+
+        fileStream.close();
+    }
+    
+
     event.Skip();
 }
 
