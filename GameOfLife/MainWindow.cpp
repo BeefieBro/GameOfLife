@@ -52,6 +52,8 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
 
     wxMenu* fileMenu = new wxMenu();
     wxMenu* optionsMenu = new wxMenu();
+    wxMenu* viewMenu = new wxMenu();
+
     
     fileMenu->Append(wxID_SAVE);
     fileMenu->Append(wxID_OPEN);
@@ -73,6 +75,7 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
 
     mMenuBar->Append(fileMenu, "File");
     mMenuBar->Append(optionsMenu, "Options");
+    mMenuBar->Append(viewMenu, "View");
     
 
 
