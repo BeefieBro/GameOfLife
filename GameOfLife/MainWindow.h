@@ -45,6 +45,11 @@ public:
     void CalculateLivingNeighborCount();
     void OnShowNeighborCount(wxCommandEvent& event);
     void RandomizeBoard(wxCommandEvent& event);
+    void OnSaveBoard(wxCommandEvent& event);
+    void OnOpenBoard(wxCommandEvent& event);
+
+
+
 
     // Define the event table for MainWindow
     wxDECLARE_EVENT_TABLE();

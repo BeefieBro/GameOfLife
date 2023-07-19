@@ -9,7 +9,9 @@
 #include "Settings.h"
 #include "wx/menu.h"
 #include "SettingsDialog.h"
-#include<cstdlib>
+#include <cstdlib>
+#include "wx/filedlg.h"
+#include <fstream>
 
 
 enum
@@ -32,6 +34,8 @@ EVT_TIMER(wxID_ANY, MainWindow::OnTimer)
 EVT_MENU(ID_SETTINGS, MainWindow::OnSettings)
 EVT_MENU(ID_SHOWNEIGHBORCOUNT, MainWindow::OnShowNeighborCount)
 EVT_MENU(ID_RANDOMIZE, MainWindow::RandomizeBoard)
+EVT_MENU(wxID_SAVE, MainWindow::OnSaveBoard)
+EVT_MENU(wxID_OPEN, MainWindow::OnOpenBoard)
 wxEND_EVENT_TABLE()
 
 
@@ -46,7 +50,13 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     mMenuBar = new wxMenuBar();
     SetMenuBar(mMenuBar);
 
+    wxMenu* fileMenu = new wxMenu();
     wxMenu* optionsMenu = new wxMenu();
+    
+    fileMenu->Append(wxID_SAVE);
+    fileMenu->Append(wxID_OPEN);
+    
+    
     
     optionsMenu->Append(ID_SETTINGS, "Settings");
     optionsMenu->Append(ID_SHOWNEIGHBORCOUNT, "Show neighbor Count", "", true);
@@ -57,7 +67,11 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     optionsMenu->Bind(wxEVT_MENU, &MainWindow::OnShowNeighborCount, this, ID_SHOWNEIGHBORCOUNT);
     optionsMenu->Bind(wxEVT_MENU, &MainWindow::RandomizeBoard, this, ID_RANDOMIZE);
 
+    fileMenu->Bind(wxEVT_MENU, &MainWindow::OnSaveBoard, this, wxID_SAVE);
+    fileMenu->Bind(wxEVT_MENU, &MainWindow::OnOpenBoard, this, wxID_OPEN);
 
+
+    mMenuBar->Append(fileMenu, "File");
     mMenuBar->Append(optionsMenu, "Options");
     
 
@@ -343,6 +357,48 @@ void MainWindow::RandomizeBoard(wxCommandEvent& event)
 void MainWindow::OnShowNeighborCount(wxCommandEvent& event)
 {
     mSettings.ShowNeighborCount = !mSettings.ShowNeighborCount;
+}
+
+void MainWindow::OnSaveBoard(wxCommandEvent& event)
+{
+    wxFileDialog fileDialog(this, "Save game of life file", wxEmptyString, wxEmptyString, "Game of Life Files (*.cells) | *.cells", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+    
+    if (fileDialog.ShowModal() == wxID_CANCEL)
+    {
+        return;
+    }
+    std::ofstream fileStream;
+    fileStream.open((std::string)fileDialog.GetPath());
+    if (fileStream.is_open())
+    {
+        for (int row = 0; row < mSettings.GridSize; row++)
+        {
+
+            for (int col = 0; col < mSettings.GridSize; col++)
+            {
+                if (mGameBoard[row][col])
+                {
+                    fileStream << '*';
+                }
+                else
+                {
+                    fileStream << '.';
+                }
+                
+
+            }
+            fileStream << '\n';
+        }
+
+
+        fileStream.close();
+    }
+    
+
+}
+void MainWindow::OnOpenBoard(wxCommandEvent& event)
+{
+    event.Skip();
 }
 
 MainWindow::~MainWindow()
