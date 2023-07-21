@@ -31,6 +31,9 @@ public:
     void OnMouseClick(wxMouseEvent& event);
 
     void SetGameBoard(std::vector<std::vector<bool>>& gameBoard);
+    void SetShowGrid(bool showGrid);
+    void SetShow10x10Grid(bool show10x10Grid); 
+
 
     
 

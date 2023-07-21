@@ -37,8 +37,7 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
     mCellHeight = panelHeight / mGridSize;
 
     context->SetPen(*wxLIGHT_GREY);
-    context->SetFont(wxFontInfo(16), *wxRED);
-
+    context->SetFont(wxFontInfo(16).Family(wxFONTFAMILY_TELETYPE), *wxRED);
 
     // Draw cells
     context->SetPen(*wxBLACK);
@@ -46,8 +45,8 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
     {
         for (int col = 0; col < mGridSize; col++)
         {
-            int rectX = col * mCellWidth;
-            int rectY = row * mCellHeight;
+            double rectX = col * mCellWidth;
+            double rectY = row * mCellHeight;
 
             if (mGameBoard[row][col])
                 context->SetBrush(mSettings->GetLivingColor());
@@ -56,23 +55,64 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
 
             context->DrawRectangle(rectX, rectY, mCellWidth, mCellHeight);
 
-            
-
-            if (mSettings->ShowNeighborCount  && rNeighborCount[row][col] > 0)
+            if (mSettings->ShowNeighborCount && rNeighborCount[row][col] > 0)
             {
-               
                 wxString text = std::to_string(rNeighborCount[row][col]);
-                
-                
-                double x, y;
+                double textWidth, textHeight;
 
-                context->GetTextExtent(text, &x, &y);
-                context->DrawText(text, rectX +(mCellWidth/2) - (x / 2), rectY + (mCellHeight/2) - (y/2));
+                context->GetTextExtent(text, &textWidth, &textHeight);
+                double textX = rectX + (mCellWidth / 2) - (textWidth / 2);
+                double textY = rectY + (mCellHeight / 2) - (textHeight / 2);
+                context->DrawText(text, textX, textY);
             }
         }
     }
+
+    // Draw the grid lines if ShowGrid is true
+    if (mSettings->ShowGrid)
+    {
+        wxPen gridPen(*wxLIGHT_GREY, 1); // Create a pen with light grey color and thickness of 1
+        context->SetPen(gridPen);
+
+        for (int i = 0; i <= mGridSize; i++)
+        {
+            // Vertical lines
+            double x = i * mCellWidth;
+            context->StrokeLine(x, 0, x, panelHeight);
+
+            // Horizontal lines
+            double y = i * mCellHeight;
+            context->StrokeLine(0, y, panelWidth, y);
+        }
+    }
+
+    // Draw the thicker grid lines every 10 lines if Show10x10Grid is true
+    if (mSettings->Show10x10Grid)
+    {
+        wxPen thickGridPen(*wxBLACK, 2); // Create a pen with black color and thickness of 2
+        context->SetPen(thickGridPen);
+
+        int linesToDraw = mGridSize / 10;
+        for (int i = 1; i <= linesToDraw; i++)
+        {
+            // Vertical lines
+            double x = i * 10 * mCellWidth;
+            context->StrokeLine(x, 0, x, panelHeight);
+
+            // Horizontal lines
+            double y = i * 10 * mCellHeight;
+            context->StrokeLine(0, y, panelWidth, y);
+        }
+    }
+
     delete context;
 }
+
+
+
+
+
+
 
 void DrawingPanel::OnMouseClick(wxMouseEvent& event)
 {
@@ -125,6 +165,14 @@ void DrawingPanel::SetGameBoard(std::vector<std::vector<bool>>& gameBoard)
     mGameBoard = gameBoard;
 }
 
+void DrawingPanel::SetShowGrid(bool showGrid)
+{ 
+    mSettings->ShowGrid = showGrid;
+}
+void DrawingPanel::SetShow10x10Grid(bool show10x10Grid)
+{ 
+    mSettings->Show10x10Grid = show10x10Grid;
+}
 
 
 

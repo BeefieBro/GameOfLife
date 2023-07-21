@@ -12,6 +12,9 @@ struct Settings
 
     bool IsToroidal = false;
 
+    bool ShowGrid;
+    bool Show10x10Grid;
+
     unsigned int AliveRed = 128;
     unsigned int AliveGreen = 128;
     unsigned int AliveBlue = 128;

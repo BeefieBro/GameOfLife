@@ -50,8 +50,10 @@ public:
     void OnFinite(wxCommandEvent& event);
     void OnTorodial(wxCommandEvent& event);
     void OnUniverseType(wxCommandEvent& event);
-    
 
+    void OnShowGrid(wxCommandEvent& event);
+
+    void OnShow10x10Grid(wxCommandEvent& event);
 
 
     // Define the event table for MainWindow

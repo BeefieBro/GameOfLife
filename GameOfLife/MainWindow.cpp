@@ -25,7 +25,9 @@ enum
     ID_RANDOMIZE,
     ID_FINITE,
     ID_TORODIAL,
-    ID_UNIVERSE_TYPE
+    ID_UNIVERSE_TYPE,
+    ID_SHOW_GRID,
+    ID_SHOW_10x10_GRID
 };
 
 
@@ -69,6 +71,24 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
 
     
 
+    viewMenu->Bind(wxEVT_MENU, &MainWindow::OnShowGrid, this, ID_SHOW_GRID);
+    viewMenu->Bind(wxEVT_MENU, &MainWindow::OnShow10x10Grid, this, ID_SHOW_10x10_GRID);
+
+    wxMenuItem* showGridItem = new wxMenuItem(viewMenu, ID_SHOW_GRID, "Show Grid", "", wxITEM_CHECK);
+    showGridItem->Check(mSettings.ShowGrid);
+    viewMenu->Append(showGridItem);
+
+    // Add the show 10x10 grid option to the View menu
+    wxMenuItem* show10x10GridItem = new wxMenuItem(viewMenu, ID_SHOW_10x10_GRID, "Show 10x10 Grid", "", wxITEM_CHECK);
+    show10x10GridItem->Check(mSettings.Show10x10Grid);
+    viewMenu->Append(show10x10GridItem);
+
+    // Bind event handlers for the new options
+    viewMenu->Bind(wxEVT_MENU, &MainWindow::OnShowGrid, this, ID_SHOW_GRID);
+    viewMenu->Bind(wxEVT_MENU, &MainWindow::OnShow10x10Grid, this, ID_SHOW_10x10_GRID);
+
+    
+
     wxMenu* universeSubMenu = new wxMenu();
     universeSubMenu->AppendRadioItem(ID_FINITE, "Finite");
     universeSubMenu->AppendRadioItem(ID_TORODIAL, "Toroidal");
@@ -102,6 +122,9 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     mMenuBar->Append(fileMenu, "File");
     mMenuBar->Append(optionsMenu, "Options");
     mMenuBar->Append(viewMenu, "View");
+
+    mSettings.ShowGrid = true;
+    mSettings.Show10x10Grid = true;
     
     
 
@@ -537,6 +560,17 @@ void MainWindow::OnUniverseType(wxCommandEvent& event)
     viewMenu->Check(ID_FINITE, !mSettings.IsToroidal);
     viewMenu->Check(ID_TORODIAL, mSettings.IsToroidal);
 
+    drawingPanel->Refresh();
+}
+void MainWindow::OnShowGrid(wxCommandEvent& event)
+{
+    mSettings.ShowGrid = !mSettings.ShowGrid;
+    drawingPanel->Refresh();
+}
+
+void MainWindow::OnShow10x10Grid(wxCommandEvent& event)
+{
+    mSettings.Show10x10Grid = !mSettings.Show10x10Grid;
     drawingPanel->Refresh();
 }
 
