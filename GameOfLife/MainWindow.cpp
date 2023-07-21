@@ -560,6 +560,7 @@ void MainWindow::OnUniverseType(wxCommandEvent& event)
     viewMenu->Check(ID_FINITE, !mSettings.IsToroidal);
     viewMenu->Check(ID_TORODIAL, mSettings.IsToroidal);
 
+
     drawingPanel->Refresh();
 }
 void MainWindow::OnShowGrid(wxCommandEvent& event)
