@@ -1,4 +1,5 @@
 #include "SettingsDialog.h"
+#include "Settings.h"
 
 enum
 {
@@ -10,8 +11,7 @@ enum
 wxBEGIN_EVENT_TABLE(SettingsDialog, wxDialog)
 EVT_BUTTON(wxID_OK, SettingsDialog::OnOKButton)
 EVT_BUTTON(wxID_CANCEL, SettingsDialog::OnCancelButton)
-EVT_BUTTON(ID_FINITE, SettingsDialog::OnFinite)
-EVT_BUTTON(ID_TORODIAL, SettingsDialog::OnTorodial)
+EVT_BUTTON(ID_DEFAULTSETTINGS, SettingsDialog::OnDefaultSettingsButton)
 wxEND_EVENT_TABLE()
 
 SettingsDialog::SettingsDialog(wxWindow* parent, Settings& settings)
@@ -93,10 +93,13 @@ unsigned int SettingsDialog::GetUpdatedGridSize() const
 {
     return mUpdatedGridSize;
 }
+
 void SettingsDialog::OnDefaultSettingsButton(wxCommandEvent& event)
 {
-    settings.GridSize = 15;
-    EndModal(wxID_CANCEL);
+    settings.ResetToDefault(); // Call the ResetToDefault method
+    mGridSizeCtrl->SetValue(settings.GridSize); // Update the GridSize control with the default value
+    mLivingCellColorCtrl->SetColour(settings.GetLivingColor()); // Update the LivingCellColor control with the default value
+    mDeadCellColorCtrl->SetColour(settings.GetDeadColor()); // Update the DeadCellColor control with the default value
     event.Skip();
 }
 void SettingsDialog::OnFinite(wxCommandEvent& event)

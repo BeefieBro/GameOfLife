@@ -39,8 +39,7 @@ EVT_MENU(ID_SHOWNEIGHBORCOUNT, MainWindow::OnShowNeighborCount)
 EVT_MENU(ID_RANDOMIZE, MainWindow::RandomizeBoard)
 EVT_MENU(wxID_SAVE, MainWindow::OnSaveBoard)
 EVT_MENU(wxID_OPEN, MainWindow::OnOpenBoard)
-EVT_MENU(ID_FINITE, MainWindow::OnFinite)
-EVT_MENU(ID_TORODIAL, MainWindow::OnTorodial)
+EVT_MENU(ID_UNIVERSE_TYPE, MainWindow::OnUniverseType)
 wxEND_EVENT_TABLE()
 
 
@@ -526,24 +525,18 @@ void MainWindow::OnUniverseType(wxCommandEvent& event)
 
     if (selectedType == ID_FINITE)
     {
-        // Set the universe to Finite
-        mSettings.IsToroidal = false;
-
-        // Update the check state of the menu items
-        mMenuBar->Check(ID_FINITE, true);
-        mMenuBar->Check(ID_TORODIAL, false);
+        mSettings.IsToroidal = false; // Set the universe to Finite
     }
     else if (selectedType == ID_TORODIAL)
     {
-        // Set the universe to Toroidal
-        mSettings.IsToroidal = true;
-
-        // Update the check state of the menu items
-        mMenuBar->Check(ID_TORODIAL, true);
-        mMenuBar->Check(ID_FINITE, false);
+        mSettings.IsToroidal = true; // Set the universe to Toroidal
     }
 
-    // Redraw the game board with the new universe type
+    // Update the check state of the menu items
+    wxMenu* viewMenu = mMenuBar->GetMenu(3); // Replace "2" with the actual position of your "View" menu in the menu bar
+    viewMenu->Check(ID_FINITE, !mSettings.IsToroidal);
+    viewMenu->Check(ID_TORODIAL, mSettings.IsToroidal);
+
     drawingPanel->Refresh();
 }
 

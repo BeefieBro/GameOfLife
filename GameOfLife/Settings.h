@@ -63,4 +63,20 @@ struct Settings
         DeadBlue = color.GetBlue();
         DeadAlpha = color.GetAlpha();
     }
+    void ResetToDefault()
+    {
+        // Set each setting value to its default state
+        GridSize = 15; // Change this to the default grid size
+        AliveRed = 128; // Change this to the default living cell color (red component)
+        AliveGreen = 128; // Change this to the default living cell color (green component)
+        AliveBlue = 128; // Change this to the default living cell color (blue component)
+        AliveAlpha = 128; // Change this to the default living cell color (alpha component)
+        DeadRed = 255; // Change this to the default dead cell color (red component)
+        DeadGreen = 255; // Change this to the default dead cell color (green component)
+        DeadBlue = 255; // Change this to the default dead cell color (blue component)
+        DeadAlpha = 255; // Change this to the default dead cell color (alpha component)
+
+        // Save the settings to the file so the old settings are gone
+        SaveData();
+    }
 };
