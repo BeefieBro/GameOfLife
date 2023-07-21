@@ -24,7 +24,8 @@ enum
     ID_SHOWNEIGHBORCOUNT,
     ID_RANDOMIZE,
     ID_FINITE,
-    ID_TORODIAL
+    ID_TORODIAL,
+    ID_UNIVERSE_TYPE
 };
 
 
@@ -38,6 +39,8 @@ EVT_MENU(ID_SHOWNEIGHBORCOUNT, MainWindow::OnShowNeighborCount)
 EVT_MENU(ID_RANDOMIZE, MainWindow::RandomizeBoard)
 EVT_MENU(wxID_SAVE, MainWindow::OnSaveBoard)
 EVT_MENU(wxID_OPEN, MainWindow::OnOpenBoard)
+EVT_MENU(ID_FINITE, MainWindow::OnFinite)
+EVT_MENU(ID_TORODIAL, MainWindow::OnTorodial)
 wxEND_EVENT_TABLE()
 
 
@@ -57,15 +60,32 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     wxMenu* viewMenu = new wxMenu();
 
     //doing universe stuff
+
+    wxMenuItem* universeType = new wxMenuItem(viewMenu, ID_UNIVERSE_TYPE, "Universe Type", "", wxITEM_NORMAL);
     wxMenuItem* finite = new wxMenuItem(viewMenu, ID_FINITE, "Finite", "",wxITEM_CHECK);
     wxMenuItem* torodial = new wxMenuItem(viewMenu, ID_TORODIAL, "Torodial", "", wxITEM_CHECK);
 
     finite->SetCheckable(true);
     torodial->SetCheckable(true);
 
+    
+
+    wxMenu* universeSubMenu = new wxMenu();
+    universeSubMenu->AppendRadioItem(ID_FINITE, "Finite");
+    universeSubMenu->AppendRadioItem(ID_TORODIAL, "Toroidal");
+
+    universeType->SetSubMenu(universeSubMenu);
+    viewMenu->Append(universeType);
+
+    viewMenu->Bind(wxEVT_MENU, &MainWindow::OnFinite, this, ID_FINITE);
+    viewMenu->Bind(wxEVT_MENU, &MainWindow::OnTorodial, this, ID_TORODIAL);
+    
+
     fileMenu->Append(wxID_SAVE);
     fileMenu->Append(wxID_OPEN);
-    
+
+    finite->Check(!mSettings.IsToroidal);
+    torodial->Check(mSettings.IsToroidal);
     
     optionsMenu->Append(ID_SETTINGS, "Settings");
     optionsMenu->Append(ID_SHOWNEIGHBORCOUNT, "Show neighbor Count", "", true);
@@ -84,7 +104,7 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     mMenuBar->Append(optionsMenu, "Options");
     mMenuBar->Append(viewMenu, "View");
     
-
+    
 
     mTimer = new wxTimer(this, wxID_ANY);
     //bind timer event
@@ -181,6 +201,7 @@ void MainWindow::UpdateStatusBar()
 int MainWindow::CalculateLivingNeighbors(int row, int col)
 {
     int livingCount = 0;
+    int gridSize = mSettings.GridSize;
 
     // Check the eight adjacent cells
     for (int i = row - 1; i <= row + 1; i++)
@@ -191,18 +212,34 @@ int MainWindow::CalculateLivingNeighbors(int row, int col)
             if (i == row && j == col)
                 continue;
 
-            // Check if the neighbor cell exists within the bounds of the game board
-            if (i >= 0 && i < mSettings.GridSize && j >= 0 && j < mSettings.GridSize)
+            int wrappedRow, wrappedCol;
+            if (mSettings.IsToroidal) // Toroidal universe
             {
-                // Increment livingCount if the neighbor cell is alive
-                if (mGameBoard[i][j])
-                    livingCount++;
+                wrappedRow = (i + gridSize) % gridSize;
+                wrappedCol = (j + gridSize) % gridSize;
             }
+            else // Finite universe
+            {
+                // Check if the neighbor cell is within the bounds of the game board
+                if (i >= 0 && i < gridSize && j >= 0 && j < gridSize)
+                {
+                    wrappedRow = i;
+                    wrappedCol = j;
+                }
+                else
+                {
+                    // Neighbor cell is outside the bounds of the game board, skip it
+                    continue;
+                }
+            }
+
+            // Increment livingCount if the neighbor cell is alive
+            if (mGameBoard[wrappedRow][wrappedCol])
+                livingCount++;
         }
     }
 
     return livingCount;
-
 }
 void MainWindow::OnToolBarClicked(wxCommandEvent& event)
 {
@@ -463,6 +500,51 @@ void MainWindow::OnOpenBoard(wxCommandEvent& event)
     
 
     event.Skip();
+}
+
+void MainWindow::OnFinite(wxCommandEvent& event)
+{
+    mSettings.IsToroidal = false; // Set the universe to Finite
+    mMenuBar->Check(ID_FINITE, true);
+    mMenuBar->Check(ID_TORODIAL, false);
+
+    drawingPanel->Refresh();
+}
+void MainWindow::OnTorodial(wxCommandEvent& event)
+{
+    mSettings.IsToroidal = true; // Set the universe to Toroidal
+    mMenuBar->Check(ID_TORODIAL, true);
+    mMenuBar->Check(ID_FINITE, false);
+
+    drawingPanel->Refresh();
+}
+
+void MainWindow::OnUniverseType(wxCommandEvent& event)
+{
+    // Get the selected universe type
+    int selectedType = event.GetId();
+
+    if (selectedType == ID_FINITE)
+    {
+        // Set the universe to Finite
+        mSettings.IsToroidal = false;
+
+        // Update the check state of the menu items
+        mMenuBar->Check(ID_FINITE, true);
+        mMenuBar->Check(ID_TORODIAL, false);
+    }
+    else if (selectedType == ID_TORODIAL)
+    {
+        // Set the universe to Toroidal
+        mSettings.IsToroidal = true;
+
+        // Update the check state of the menu items
+        mMenuBar->Check(ID_TORODIAL, true);
+        mMenuBar->Check(ID_FINITE, false);
+    }
+
+    // Redraw the game board with the new universe type
+    drawingPanel->Refresh();
 }
 
 MainWindow::~MainWindow()

@@ -47,6 +47,9 @@ public:
     void RandomizeBoard(wxCommandEvent& event);
     void OnSaveBoard(wxCommandEvent& event);
     void OnOpenBoard(wxCommandEvent& event);
+    void OnFinite(wxCommandEvent& event);
+    void OnTorodial(wxCommandEvent& event);
+    void OnUniverseType(wxCommandEvent& event);
     
 
 

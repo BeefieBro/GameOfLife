@@ -10,6 +10,8 @@ struct Settings
 
     bool ShowNeighborCount = false;
 
+    bool IsToroidal = false;
+
     unsigned int AliveRed = 128;
     unsigned int AliveGreen = 128;
     unsigned int AliveBlue = 128;
