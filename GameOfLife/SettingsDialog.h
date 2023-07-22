@@ -17,6 +17,7 @@ private:
     wxColourPickerCtrl* mLivingCellColorCtrl;
     wxColourPickerCtrl* mDeadCellColorCtrl;
     Settings& settings; // Reference to the existing Settings object
+    wxSpinCtrl* mTimerIntervalCtrl;
 
 public:
     SettingsDialog(wxWindow* parent, Settings& settings);

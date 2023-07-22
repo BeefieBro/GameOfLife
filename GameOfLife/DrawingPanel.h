@@ -14,6 +14,9 @@ private:
     std::vector<std::vector<bool>>& mGameBoard;
     std::vector<std::vector<int>>& rNeighborCount;
 
+    //int mLivingCellCount;    
+    //int mGenerationCount;
+
     double mGridSize;
     double mCellWidth;
     double mCellHeight;
@@ -33,6 +36,8 @@ public:
     void SetGameBoard(std::vector<std::vector<bool>>& gameBoard);
     void SetShowGrid(bool showGrid);
     void SetShow10x10Grid(bool show10x10Grid); 
+
+    void ShowHUD();
 
 
     

@@ -27,7 +27,9 @@ enum
     ID_TORODIAL,
     ID_UNIVERSE_TYPE,
     ID_SHOW_GRID,
-    ID_SHOW_10x10_GRID
+    ID_SHOW_10x10_GRID,
+    ID_SHOW_HUD,
+    ID_IMPORT
 };
 
 
@@ -42,6 +44,7 @@ EVT_MENU(ID_RANDOMIZE, MainWindow::RandomizeBoard)
 EVT_MENU(wxID_SAVE, MainWindow::OnSaveBoard)
 EVT_MENU(wxID_OPEN, MainWindow::OnOpenBoard)
 EVT_MENU(ID_UNIVERSE_TYPE, MainWindow::OnUniverseType)
+EVT_MENU(ID_IMPORT, MainWindow::OnImport)
 wxEND_EVENT_TABLE()
 
 
@@ -52,6 +55,7 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     
    // Add Load Settings
     mSettings.LoadData();
+    mSettings.generationCount = 0;
 
     mMenuBar = new wxMenuBar();
     SetMenuBar(mMenuBar);
@@ -66,21 +70,37 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     wxMenuItem* finite = new wxMenuItem(viewMenu, ID_FINITE, "Finite", "",wxITEM_CHECK);
     wxMenuItem* torodial = new wxMenuItem(viewMenu, ID_TORODIAL, "Torodial", "", wxITEM_CHECK);
 
-    finite->SetCheckable(true);
-    torodial->SetCheckable(true);
+    wxMenuItem* import = new wxMenuItem(fileMenu, ID_IMPORT, "Import");
 
-    
+    //finite->SetCheckable(true);
+    //torodial->SetCheckable(true);
+
+    viewMenu->AppendCheckItem(ID_SHOW_HUD, "Show HUD");
+    viewMenu->Bind(wxEVT_MENU, &MainWindow::OnShowHUD, this, ID_SHOW_HUD);
+
+    // Set the initial check state based on the setting value
+    viewMenu->Check(ID_SHOW_HUD, mSettings.ShowHUD);
 
     viewMenu->Bind(wxEVT_MENU, &MainWindow::OnShowGrid, this, ID_SHOW_GRID);
     viewMenu->Bind(wxEVT_MENU, &MainWindow::OnShow10x10Grid, this, ID_SHOW_10x10_GRID);
 
+
+
+
+    mSettings.ShowGrid = true;
+    mSettings.Show10x10Grid = true;
+
     wxMenuItem* showGridItem = new wxMenuItem(viewMenu, ID_SHOW_GRID, "Show Grid", "", wxITEM_CHECK);
-    showGridItem->Check(mSettings.ShowGrid);
+
     viewMenu->Append(showGridItem);
+    //showGridItem->Check(mSettings.ShowGrid);
+    
+
+
+    
 
     // Add the show 10x10 grid option to the View menu
     wxMenuItem* show10x10GridItem = new wxMenuItem(viewMenu, ID_SHOW_10x10_GRID, "Show 10x10 Grid", "", wxITEM_CHECK);
-    show10x10GridItem->Check(mSettings.Show10x10Grid);
     viewMenu->Append(show10x10GridItem);
 
     // Bind event handlers for the new options
@@ -102,9 +122,10 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
 
     fileMenu->Append(wxID_SAVE);
     fileMenu->Append(wxID_OPEN);
+    fileMenu->Append(ID_IMPORT);
 
-    finite->Check(!mSettings.IsToroidal);
-    torodial->Check(mSettings.IsToroidal);
+    //finite->Check(!mSettings.IsToroidal);
+    //torodial->Check(mSettings.IsToroidal);
     
     optionsMenu->Append(ID_SETTINGS, "Settings");
     optionsMenu->Append(ID_SHOWNEIGHBORCOUNT, "Show neighbor Count", "", true);
@@ -123,8 +144,7 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     mMenuBar->Append(optionsMenu, "Options");
     mMenuBar->Append(viewMenu, "View");
 
-    mSettings.ShowGrid = true;
-    mSettings.Show10x10Grid = true;
+    
     
     
 
@@ -192,6 +212,7 @@ void MainWindow::OnSizeChange(wxSizeEvent& event)
 
 Settings& MainWindow::GetSettings()
 {
+    mSettings.SaveData();
     return mSettings;
 }
 
@@ -210,13 +231,14 @@ void MainWindow::InitializeGrid()
     {
         drawingPanel = new DrawingPanel(this, mGameBoard, neighborCount, &mSettings); // Create the drawing panel and pass the game board reference
     }
-
+    mSettings.SaveData();
     drawingPanel->SetGridSize(mSettings.GridSize);
     
 }
 void MainWindow::UpdateStatusBar()
 {
-    wxString statusText = wxString::Format("Generation: %d   Living Cells: %d", mGenerationCount, mLivingCellCount);
+    wxString statusText = wxString::Format("Generation: %d   Living Cells: %d", mSettings.generationCount, mSettings.livingcellcount);
+    mSettings.SaveData();
     mStatusBar->SetStatusText(statusText, 0);
 }
 
@@ -260,7 +282,6 @@ int MainWindow::CalculateLivingNeighbors(int row, int col)
                 livingCount++;
         }
     }
-
     return livingCount;
 }
 void MainWindow::OnToolBarClicked(wxCommandEvent& event)
@@ -270,7 +291,7 @@ void MainWindow::OnToolBarClicked(wxCommandEvent& event)
     switch (toolbarID)
     {
     case ID_PLAY:
-        mTimer->Start(mTimerInterval);
+        mTimer->Start(mSettings.Interval);
         break;
     case ID_PAUSE:
         mTimer->Stop();
@@ -333,11 +354,9 @@ void MainWindow::CalculateNextGeneration()
 
     mGameBoard.swap(sandbox);
 
-    mGenerationCount++;
-    mLivingCellCount = livingCount;
-
+    mSettings.generationCount++;
+    mSettings.livingcellcount = livingCount;
     UpdateStatusBar();
-    
         MainWindow::CalculateLivingNeighborCount();
     
     drawingPanel->Refresh();
@@ -355,17 +374,17 @@ void MainWindow::ClearGameBoard()
             }
         }
 
-        mLivingCellCount = 0;
-        mGenerationCount = 0;
+        mSettings.livingcellcount = 0;
+        mSettings.generationCount = 0;
     }
-
     UpdateStatusBar();
-
+    mSettings.SaveData();
     drawingPanel->Refresh();
 }
 
 void MainWindow::OnTimer(wxTimerEvent& event)
 {
+
     CalculateNextGeneration();
 
     drawingPanel->Refresh();
@@ -373,8 +392,20 @@ void MainWindow::OnTimer(wxTimerEvent& event)
 
 void MainWindow::RefreshLivingCellCount()
 {
-    mLivingCellCount = 0;
+    mSettings.livingcellcount = 0;
     // Finish the fix for the living cell count bug on status bar
+    
+    for (int row = 0; row < mSettings.GridSize; row++)
+    {
+        for (int col = 0; col < mSettings.GridSize; col++)
+        {
+            if (mGameBoard[row][col])
+                mSettings.livingcellcount++;
+        }
+    }
+
+
+    mSettings.SaveData();
     MainWindow::UpdateStatusBar(); 
     Refresh();
 }
@@ -384,7 +415,6 @@ void MainWindow::OnSettings(wxCommandEvent& event)
     SettingsDialog settingsDialog(this, mSettings);
     if (settingsDialog.ShowModal() == wxID_OK)
     {
-
         //Call the grid size setter in your settings object and pass in settingsDialog.GetUpdatedGridSize()
         InitializeGrid();
         Refresh();
@@ -405,7 +435,6 @@ void MainWindow::CalculateLivingNeighborCount()
 
             }
         }
-    
 }
 void MainWindow::RandomizeBoard(wxCommandEvent& event)
 {
@@ -465,7 +494,6 @@ void MainWindow::OnSaveBoard(wxCommandEvent& event)
 
         fileStream.close();
     }
-    
 
 }
 void MainWindow::OnOpenBoard(wxCommandEvent& event)
@@ -519,7 +547,6 @@ void MainWindow::OnOpenBoard(wxCommandEvent& event)
 
         fileStream.close();
     }
-    
 
     event.Skip();
 }
@@ -529,7 +556,7 @@ void MainWindow::OnFinite(wxCommandEvent& event)
     mSettings.IsToroidal = false; // Set the universe to Finite
     mMenuBar->Check(ID_FINITE, true);
     mMenuBar->Check(ID_TORODIAL, false);
-
+    
     drawingPanel->Refresh();
 }
 void MainWindow::OnTorodial(wxCommandEvent& event)
@@ -537,7 +564,7 @@ void MainWindow::OnTorodial(wxCommandEvent& event)
     mSettings.IsToroidal = true; // Set the universe to Toroidal
     mMenuBar->Check(ID_TORODIAL, true);
     mMenuBar->Check(ID_FINITE, false);
-
+    
     drawingPanel->Refresh();
 }
 
@@ -560,19 +587,82 @@ void MainWindow::OnUniverseType(wxCommandEvent& event)
     viewMenu->Check(ID_FINITE, !mSettings.IsToroidal);
     viewMenu->Check(ID_TORODIAL, mSettings.IsToroidal);
 
-
+    
     drawingPanel->Refresh();
 }
 void MainWindow::OnShowGrid(wxCommandEvent& event)
 {
     mSettings.ShowGrid = !mSettings.ShowGrid;
+    
     drawingPanel->Refresh();
 }
+
 
 void MainWindow::OnShow10x10Grid(wxCommandEvent& event)
 {
     mSettings.Show10x10Grid = !mSettings.Show10x10Grid;
     drawingPanel->Refresh();
+}
+void MainWindow::OnShowHUD(wxCommandEvent& event)
+{
+    bool showHUD = event.IsChecked();
+    mSettings.ShowHUD = showHUD;
+
+    drawingPanel->Refresh();
+}
+void MainWindow::OnImport(wxCommandEvent& event)
+{
+    wxFileDialog fileDialog(this, "Open game of life file", wxEmptyString, wxEmptyString, "Game of Life Files (*.cells) | *.cells", wxFD_OPEN);
+
+    if (fileDialog.ShowModal() == wxID_CANCEL)
+    {
+        return;
+    }
+
+
+
+    mGameBoard.clear();
+    mGameBoard.resize(0);
+    //MainWindow::ClearGameBoard();
+
+    std::string buffer;
+    std::ifstream fileStream;
+    int index = 0;
+    fileStream.open((std::string)fileDialog.GetPath());
+    if (fileStream.is_open())
+    {
+        while (!fileStream.eof())
+        {
+            std::getline(fileStream, buffer);
+            if (buffer.size() == 0) { break; }
+            if (mGameBoard.size() == 0)
+            {
+                mGameBoard.resize(buffer.size());
+                mSettings.GridSize = buffer.size();
+                Refresh();
+
+            }
+            mGameBoard[index].resize(buffer.size());
+            for (int i = 0; i < buffer.size(); i++)
+            {
+                if (buffer[i] == '*')
+                {
+                    mGameBoard[index][i] = true;
+                }
+                else
+                {
+                    mGameBoard[index][i] = false;
+                }
+
+            }
+            index++;
+
+        }
+
+        fileStream.close();
+    }
+
+    event.Skip();
 }
 
 MainWindow::~MainWindow()

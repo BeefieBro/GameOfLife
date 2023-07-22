@@ -16,6 +16,7 @@ DrawingPanel::DrawingPanel(wxFrame* parent, std::vector<std::vector<bool>>& game
     mCellWidth = 0;
     mCellHeight = 0;
 
+
     pMainWindow = (MainWindow*)parent;
 }
 
@@ -40,7 +41,7 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
     context->SetFont(wxFontInfo(16).Family(wxFONTFAMILY_TELETYPE), *wxRED);
 
     // Draw cells
-    context->SetPen(*wxBLACK);
+    context->SetPen(*wxWHITE);
     for (int row = 0; row < mGridSize; row++)
     {
         for (int col = 0; col < mGridSize; col++)
@@ -104,6 +105,44 @@ void DrawingPanel::OnPaint(wxPaintEvent& event)
             context->StrokeLine(0, y, panelWidth, y);
         }
     }
+
+    // Draw HUD if ShowHUD is true
+    if (mSettings->ShowHUD)
+    {
+        wxString generationsText = wxString::Format("Generations: %d", mSettings->generationCount);
+        wxString livingCellsText = wxString::Format("Living Cells: %d", mSettings->livingcellcount);
+        wxString boundaryText = mSettings->IsToroidal ? "Boundary: Toroidal" : "Boundary: Finite";
+        wxString sizeText = wxString::Format("Universe Size: %d x %d", mSettings->GridSize, mSettings->GridSize);
+
+        double textWidth, textHeight;
+
+        context->SetFont(wxFontInfo(16).Family(wxFONTFAMILY_TELETYPE), *wxRED);
+
+        // Draw generations text
+        context->GetTextExtent(generationsText, &textWidth, &textHeight);
+        double generationsX = 10; // Adjust X coordinate as needed
+        double generationsY = panelHeight - textHeight - 10; // Adjust Y coordinate as needed
+        context->DrawText(generationsText, generationsX, generationsY);
+
+        // Draw living cells text
+        context->GetTextExtent(livingCellsText, &textWidth, &textHeight);
+        double livingCellsX = 10; // Adjust X coordinate as needed
+        double livingCellsY = generationsY - textHeight - 5; // Adjust Y coordinate as needed
+        context->DrawText(livingCellsText, livingCellsX, livingCellsY);
+
+        // Draw boundary text
+        context->GetTextExtent(boundaryText, &textWidth, &textHeight);
+        double boundaryX = 10; // Adjust X coordinate as needed
+        double boundaryY = livingCellsY - textHeight - 5; // Adjust Y coordinate as needed
+        context->DrawText(boundaryText, boundaryX, boundaryY);
+
+        // Draw size text
+        context->GetTextExtent(sizeText, &textWidth, &textHeight);
+        double sizeX = 10; // Adjust X coordinate as needed
+        double sizeY = boundaryY - textHeight - 5; // Adjust Y coordinate as needed
+        context->DrawText(sizeText, sizeX, sizeY);
+    }
+
 
     delete context;
 }

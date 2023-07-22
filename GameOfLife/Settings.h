@@ -6,14 +6,19 @@ struct Settings
 {
     unsigned int GridSize = 12;
 
-    int Interval = 50;
+    int livingcellcount;
+    int generationCount;
+
+    int Interval = 100;
 
     bool ShowNeighborCount = false;
 
     bool IsToroidal = false;
 
-    bool ShowGrid;
-    bool Show10x10Grid;
+    bool ShowGrid = true;
+    bool Show10x10Grid = true;
+
+    bool ShowHUD;
 
     unsigned int AliveRed = 128;
     unsigned int AliveGreen = 128;
@@ -70,6 +75,7 @@ struct Settings
     {
         // Set each setting value to its default state
         GridSize = 15; // Change this to the default grid size
+        Interval = 50; // change to default
         AliveRed = 128; // Change this to the default living cell color (red component)
         AliveGreen = 128; // Change this to the default living cell color (green component)
         AliveBlue = 128; // Change this to the default living cell color (blue component)

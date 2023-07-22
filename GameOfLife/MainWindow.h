@@ -12,13 +12,13 @@ private:
     int mGridSize;
     std::vector<std::vector<bool>> mGameBoard;
     std::vector<std::vector<int>> neighborCount;
-    int mGenerationCount = 0; // Number of generations
-    int mLivingCellCount = 0; // Number of living cells
+    //int mGenerationCount = 0; // Number of generations
+    //int mLivingCellCount = 0; // Number of living cells
     wxStatusBar* mStatusBar; // Status bar
     wxToolBar* mToolBar;
     wxTimer* mTimer;
 
-    int mTimerInterval = 50;
+    int mTimerInterval = mSettings.Interval;
 
     //create an instance of settings
     Settings mSettings;
@@ -54,6 +54,8 @@ public:
     void OnShowGrid(wxCommandEvent& event);
 
     void OnShow10x10Grid(wxCommandEvent& event);
+    void OnShowHUD(wxCommandEvent& event);
+    void OnImport(wxCommandEvent& event);
 
 
     // Define the event table for MainWindow
