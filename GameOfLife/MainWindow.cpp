@@ -44,7 +44,6 @@ EVT_MENU(ID_RANDOMIZE, MainWindow::RandomizeBoard)
 EVT_MENU(wxID_SAVE, MainWindow::OnSaveBoard)
 EVT_MENU(wxID_OPEN, MainWindow::OnOpenBoard)
 EVT_MENU(ID_UNIVERSE_TYPE, MainWindow::OnUniverseType)
-EVT_MENU(ID_IMPORT, MainWindow::OnImport)
 wxEND_EVENT_TABLE()
 
 
@@ -70,7 +69,7 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
     wxMenuItem* finite = new wxMenuItem(viewMenu, ID_FINITE, "Finite", "",wxITEM_CHECK);
     wxMenuItem* torodial = new wxMenuItem(viewMenu, ID_TORODIAL, "Torodial", "", wxITEM_CHECK);
 
-    wxMenuItem* import = new wxMenuItem(fileMenu, ID_IMPORT, "Import");
+    wxMenuItem* mImport = new wxMenuItem(fileMenu, ID_IMPORT, "Import", "", wxITEM_NORMAL);
 
     //finite->SetCheckable(true);
     //torodial->SetCheckable(true);
@@ -122,7 +121,8 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
 
     fileMenu->Append(wxID_SAVE);
     fileMenu->Append(wxID_OPEN);
-    fileMenu->Append(ID_IMPORT);
+    fileMenu->Append(ID_IMPORT, "Import");
+    //fileMenu->Append(mImport);
 
     //finite->Check(!mSettings.IsToroidal);
     //torodial->Check(mSettings.IsToroidal);
@@ -138,6 +138,7 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(50
 
     fileMenu->Bind(wxEVT_MENU, &MainWindow::OnSaveBoard, this, wxID_SAVE);
     fileMenu->Bind(wxEVT_MENU, &MainWindow::OnOpenBoard, this, wxID_OPEN);
+    fileMenu->Bind(wxEVT_MENU, &MainWindow::OnImport, this, ID_IMPORT);
 
 
     mMenuBar->Append(fileMenu, "File");
@@ -612,7 +613,7 @@ void MainWindow::OnShowHUD(wxCommandEvent& event)
 }
 void MainWindow::OnImport(wxCommandEvent& event)
 {
-    wxFileDialog fileDialog(this, "Open game of life file", wxEmptyString, wxEmptyString, "Game of Life Files (*.cells) | *.cells", wxFD_OPEN);
+    wxFileDialog fileDialog(this, "Import Game of life file", wxEmptyString, wxEmptyString, "Game of Life Files (*.cells) | *.cells", wxFD_OPEN);
 
     if (fileDialog.ShowModal() == wxID_CANCEL)
     {
@@ -621,9 +622,8 @@ void MainWindow::OnImport(wxCommandEvent& event)
 
 
 
-    mGameBoard.clear();
-    mGameBoard.resize(0);
-    //MainWindow::ClearGameBoard();
+    MainWindow::ClearGameBoard();
+    
 
     std::string buffer;
     std::ifstream fileStream;
@@ -633,29 +633,46 @@ void MainWindow::OnImport(wxCommandEvent& event)
     {
         while (!fileStream.eof())
         {
-            std::getline(fileStream, buffer);
-            if (buffer.size() == 0) { break; }
-            if (mGameBoard.size() == 0)
+
+
+            if (index < mSettings.GridSize)
             {
-                mGameBoard.resize(buffer.size());
-                mSettings.GridSize = buffer.size();
-                Refresh();
+
+                std::getline(fileStream, buffer);
+
+                if (buffer.size() == 0) { break; }
+
+                for (int i = 0; i < buffer.size(); i++)
+                {
+
+
+                    if (i < mSettings.GridSize)
+                    {
+
+                        if (buffer[i] == '*')
+                        {
+                            mGameBoard[index][i] = true;
+                        }
+                        else
+                        {
+                            mGameBoard[index][i] = false;
+                        }
+
+                    }
+
+
+
+
+                }
 
             }
-            mGameBoard[index].resize(buffer.size());
-            for (int i = 0; i < buffer.size(); i++)
+            else
             {
-                if (buffer[i] == '*')
-                {
-                    mGameBoard[index][i] = true;
-                }
-                else
-                {
-                    mGameBoard[index][i] = false;
-                }
-
+                break;
             }
+
             index++;
+
 
         }
 
